@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">-->
+<!--<link rel="icon" type="image/png" href="https://cdn.css-tricks.com/favicon-16x16.png" sizes="16x16">-->
+</head>
+<body>
+	<div id="divStockCode">
+		Stock Code: <input type="text" id="txtStockCode" class="textbox" value="">
+		<button id="btnView" class="button">View</button>
+	</div>
+	<br>
+	<div id="tabStock" class="tabs" width="1300">
+		<ul>
+			<li id="liPriceInfo"><a href="#tabPriceInfo">Price Info</a></li>
+			<li id="liQuote"><a href="#tabQuote">Quote</a></li>
+			<li id="liQuarterly"><a href="#tabQuarterly">Quarterly</a></li>
+			<li id="liNews"><a href="#tabNews">News</a></li>
+			<li id="liFinSummary"><a href="#tabFinSummary">Financial Summary</a></li>
+			<li id="liEntitlement"><a href="#tabEntitlement">Entitlements</a></li>
+			<li id="liSHChanges"><a href="#tabSHChanges">Shareholder Changes</a></li>
+			<li id="liLinks"><a href="#tabLinks">Links</a></li>
+	  	</ul>
+	 	<div id="tabPriceInfo" class="tabcontent">
+	    	<table>
+				<tr>
+					<td colspan="3">
+						<table>
+							<tr>
+								<td>
+									<iframe id="iDayChart" height="260" width="645" frameborder="1"></iframe>
+									<a id="aDayChart" href="" class="links" target="_blank"></a>
+								</td>
+								<td>
+									<iframe id="iDayChart2" height="260" width="645" frameborder="1"></iframe>
+									<a id="aDayChart2" href="" class="links" target="_blank"></a>
+								</td>
+							</tr>
+						</table>
+					</td>
+				<tr>
+					<td>
+						<img id="imgChart1" height="260" width="430">
+					</td>
+					<td>
+						<img id="imgChart2" height="260" width="430">
+					</td>
+					<td>
+						<img id="imgChart3" height="260" width="430">
+					</td>
+				</tr>
+			</table>
+	  	</div>
+	  	<div id="tabQuote" class="tabcontent">
+	    	<table>
+	    		<tr>
+	    			<td>
+	    				<img id="imgChart4" style="height:260px;width:460px;">
+	    			</td>
+	    			<td rowspan="2">
+	    				<iframe id="iQuote" scrolling="no" frameborder="0" height="450" width="800"></iframe>
+	    			</td>
+	    		</tr>
+	    		<!--<tr>
+	    			<td>
+	    				<img id="imgChart5" style="height:260px;width:460px;">
+	    			</td>
+	    		</tr>-->
+	    	</table>
+	  	</div>
+	  	<div id="tabQuarterly" class="tabcontent">
+	    	<iframe id="iQuarterly" scrolling="no" frameborder="0" height="480" width="760"></iframe>
+	    	<!--<iframe id="iQuarterly" allowtransparency="true" style="height: 500px; width: 100%;" onload="resize_iframe(this);"></iframe>-->
+	  	</div>
+	  	<div id="tabNews" class="tabcontent">
+	    	<iframe id="iNews" scrolling="no" frameborder="0" height="500" width="1300"></iframe>
+	  	</div>
+	  	<div id="tabFinSummary" class="tabcontent">
+	    	<iframe id="iFinSummary" scrolling="no" frameborder="0" height="500" width="1300"></iframe>
+	  	</div>
+	  	<div id="tabEntitlement" class="tabcontent">
+	    	<iframe id="iEntitlement" scrolling="no" frameborder="0" height="500" width="1300"></iframe>
+	  	</div>
+	  	<div id="tabSHChanges" class="tabcontent">
+	    	<iframe id="iSHChanges" scrolling="no" frameborder="0" height="500" width="1300"></iframe>
+	  	</div>
+	  	<div id="tabLinks" class="tabcontent">
+	  	</div>
+	</div>
+</body>
+<style>
+	body, .button, .textbox { 
+		font-family: "Roboto";
+		font-size: 12pt;
+	}
+	.ui-menu {
+		width: 200px;
+		margin-bottom: 2em;
+		list-style: none;
+		padding: 2px;
+		margin: 0;
+		display: block;
+		outline: none;
+	}
+	.ui-autocomplete {
+		position: absolute;
+		top: 0;
+		left: 0;
+		cursor: default;
+	}
+	.ui-corner-all {
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+	}
+	.ui-widget-content {
+		border: 1px solid #aaaaaa;
+		//background: #ffffff url("images/ui-bg_glass_75_ffffff_1x400.png") 50% 50% repeat-x;
+		background: #ffffff;
+		color: #404040;
+		width: 1308px;
+	}
+	.ui-widget {
+		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		font-size: 13px;
+	}
+	.ui-front {
+		z-index: 100;
+	}
+	.ui-menu .ui-menu-item {
+		margin: 0;
+		padding: 0;
+		width: 20%;
+		list-style: none;
+		/*support: IE10, see #8844;*/
+	}
+	.ui-menu .ui-menu-item a.ui-corner-all {
+		-webkit-border-radius: 0px;
+		-moz-border-radius: 0px;
+		border-radius: 0px;
+	}
+	.ui-menu .ui-menu-item a {
+		text-decoration: none;
+		display: block;
+		padding: 2px .4em;
+		line-height: 1.5;
+		min-height: 0;
+		support: IE7;
+		font-weight: normal;
+	}
+	.ui-corner-all {
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+	}
+	.ui-tabs .ui-tabs-hide {
+    	display: none;
+	}
+	/* Hide Search Result */
+	.ui-helper-hidden-accessible { 
+		display:none; 
+	}
+	ul {
+	    list-style-type: none;
+	    margin: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    background-color: #333333;
+	    font-family: "Roboto";
+	    font-size: 12pt;
+	    font-weight: bold;
+	}
+	li {
+	    float: left;
+	    font-family: "Roboto";
+	    font-size: 12pt;
+	    font-weight: bold;
+	}
+	li a {
+	    display: block;
+	    color: white;
+	    text-align: center;
+	    padding: 16px;
+	    text-decoration: none;
+	}
+	li a:hover, .ui-tabs-active {
+	    background-color: #ffffff8f;
+	}
+	p {
+	    font-family: "Roboto";
+	    font-size: 12pt;
+	    font-weight: bold;
+	    padding-left: 16px;
+	}
+	a.links {
+	    font-family: "Roboto";
+	    font-size: 10pt;
+	    padding-left: 16px;
+	    display: block; /* https://www.sitepoint.com/community/t/padding-top-or-padding-bottom-on-a-link-not-working/3786 */
+	}
+</style>
+<script>
+var loadedTab = [];
+var stockCode = '';
+var stockSymbol = '';
+var stockTRID = '';
+
+function resize_iframe(frameID){
+	try
+	{
+		var height = window.innerHeight; //Firefox
+		/*if (document.body.clientHeight)
+		{
+			height = document.body.clientHeight; //IE
+		}*/
+
+      	//resize the iframe according to the size of the
+      	//window (all these should be on the same line)
+     	document.getElementById(frameID.id).style.height = parseInt(height - document.getElementById(frameID.id).offsetTop - 68)+"px";
+	}
+	catch(e)
+	{
+	}
+}
+
+$(document).ready(function(){
+    $("#btnView").click(function(){
+    	loadedTab = [];
+    	
+    	var activeTab = $("#tabStock").tabs("option", "active");
+    	
+    	if (activeTab == 0) {
+    		// https://api.jqueryui.com/tabs/#option-active
+       		$("#tabStock").tabs("option", "active", 1);
+    	}
+    	
+    	// https://api.jqueryui.com/tabs/#option-active
+       	$("#tabStock").tabs("option", "active", 0);
+    });
+    
+    $("#tabStock").tabs({
+		activate: function (event, ui) {
+			if ($("#txtStockCode").val().trim()) {
+			    var activeTab = $("#tabStock").tabs("option", "active");
+			    //alert(activeTab);
+		 		switch (activeTab) {
+					case 0:
+	        			if ($.inArray(activeTab, loadedTab) < 0) {
+	        				// Intraday Chart
+							var link1 = 'https://secure8.itradecimb.com.my/gcCIMBNEW/TTChart/TTchartTCP.jsp?code=' + stockCode + '&exchg=KL&mode=d&color=b';
+					       	$("#iDayChart").attr("src", link1);
+					       	$("#aDayChart").attr("href", link1);
+					       	$("#aDayChart").text("View Chart");
+					       	
+					       	// Daily Chart
+					       	var link2 = 'https://chart.asiaebroker.com/mchart/index.jsp?code=' + stockCode + '&exchg=KL&mode=d&color=b';
+					       	$("#iDayChart2").attr("src", link2);
+					       	$("#aDayChart2").attr("href", link2);
+					       	$("#aDayChart2").text("View Chart");
+					       	
+					       	// Volume Distrubution Charts
+					       	var link3 = 'http://chart.shareinvestor.com/charts_cached/charts.pl?id=' + stockCode + '.MY&type=si_vol_dist_1d&delay=0';
+		        			$("#imgChart1").attr("src", link3);
+		        			var link4 = 'http://chart.shareinvestor.com/charts_cached/charts.pl?id=' + stockCode + '.MY&type=si_vol_dist_5d&delay=0';
+		        			$("#imgChart2").attr("src", link4);
+		        			var link5 = 'http://chart.shareinvestor.com/charts_cached/charts.pl?id=' + stockCode + '.MY&type=si_vol_dist_10d&delay=0';
+		        			$("#imgChart3").attr("src", link5);
+		        			
+		        			loadedTab.push(activeTab);
+		        			}
+						break;
+					case 1:
+	       				// Quote
+				    	var link11 = 'https://www.klsecrunch.com/counters/view/' + stockCode + '/#tab_live-info';
+				    	$("#iQuote").attr("src", link11);
+				    	
+				    	/*var link12 = 'http://www.malaysiastock.biz/GetChart.aspx?code=FBMKLCI_L';
+		        		$("#imgChart4").attr("src", link12);*/
+		        		
+		        		var link13 = 'http://www.malaysiastock.biz/GetChart.aspx?code=' + stockCode;
+		        		$("#imgChart4").attr("src", link13);
+		        		
+				    	// Removed as refresh is needed for loading anchor
+	       				/*if ($.inArray(activeTab, loadedTab) < 0) {
+	        				loadedTab.push(activeTab);
+	        			}*/
+				        break;
+				    case 2:
+	       				// Quarterly Result
+				    	var link6 = 'http://www.malaysiastock.biz/Corporate-Infomation.aspx?securityCode=' + stockCode + '#MainContent_Panel';
+				    	$("#iQuarterly").attr("src", link6);
+				    	
+				    	// Removed as refresh is needed for loading anchor
+	       				/*if ($.inArray(activeTab, loadedTab) < 0) {
+	        				loadedTab.push(activeTab);
+	        			}*/
+				        break;
+				    case 3:
+	       				if ($.inArray(activeTab, loadedTab) < 0) {
+		       				// News
+					    	var link7 = 'http://web3.cyberstock.com.my/masanews.net/web/browsenews.aspx?stock=' + stockCode + '&size=0&theme=0';
+					    	$("#iNews").attr("src", link7);
+		        			loadedTab.push(activeTab);
+	        			}
+				        break;
+				    case 4:
+	       				if ($.inArray(activeTab, loadedTab) < 0) {
+	       					// Financial Summary
+				    		var link8 = 'http://web3.cyberstock.com.my/masanews.net/web/browsetables.aspx?msg=NA&stock=' + stockCode + '&tabtype=6';
+					    	$("#iFinSummary").attr("src", link8);
+		        				loadedTab.push(activeTab);
+	        			}
+				        break;
+				    case 5:
+	       				if ($.inArray(activeTab, loadedTab) < 0) {
+	       					// Entitlements
+				    		var link9 = 'http://web3.cyberstock.com.my/masanews.net/web/browsetables.aspx?msg=NA&stock=' + stockCode + '&tabtype=3';
+					    	$("#iEntitlement").attr("src", link9);
+		        				loadedTab.push(activeTab);
+	        			}
+				        break;
+					case 6:
+	       				if ($.inArray(activeTab, loadedTab) < 0) {
+	       					// Shareholder Changes
+				    		var link10 = 'http://web3.cyberstock.com.my/masanews.net/web/browsetables.aspx?msg=NA&stock=' + stockCode + '&tabtype=2';
+					    	$("#iSHChanges").attr("src", link10);
+		        				loadedTab.push(activeTab);
+	        			}
+				        break;
+				    case 7:
+	       				if ($.inArray(activeTab, loadedTab) < 0) {
+	       					// Links
+	       					var linkInfo;
+	       					
+	       					linkInfo = "<p>Bursa Information</p>";
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/list-of-companies/plc-profile.html?stock_code=' + stockCode + '" class="links" target="_blank">Company Overview</a>';
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/company-announcements/#/?category=all&company=' + stockCode + '" class="links" target="_blank">Company Announcements</a>';
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/company-announcements/#/?category=AR&company=' + stockCode + '" class="links" target="_blank">Annual Reports</a>';
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/company-announcements/#/?category=FA&company=' + stockCode + '" class="links" target="_blank">Financial Results</a>';
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/company-announcements/#/?category=EA&company=' + stockCode + '" class="links" target="_blank">Entitlements</a>';
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/company-announcements/#/?category=SH&company=' + stockCode + '" class="links" target="_blank">Changes in Shareholdings</a>';
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/company-announcements/#/?category=SB&company=' + stockCode + '" class="links" target="_blank">Shares Buy Back</a>';
+	       					linkInfo += '<a href="http://www.bursamalaysia.com/market/listed-companies/research-repository/research-reports#/?counter=' + stockCode + '" class="links" target="_blank">Research Repository</a>';
+	       					linkInfo += "<p>General</p>";
+	       					linkInfo += '<a href="http://www.malaysiastock.biz/Corporate-Infomation.aspx?securityCode=' + stockCode + '" class="links" target="_blank">Malaysiastock.biz</a>';
+	       					linkInfo += '<a href="http://klse.i3investor.com/quoteservlet.jsp?sa=ss&q=' + stockCode + '" class="links" target="_blank">i3Investor</a>';
+	       					linkInfo += '<a href="http://www.bursamarketplace.com/mkt/themarket/stock/' + stockTRID.replace(".KL", "") + '" class="links" target="_blank">Bursa Marketplace</a>';
+							linkInfo += '<br>';
+							
+				    		$('#tabLinks').html(linkInfo);
+	        			}
+				        break;
+				    default: 
+				        break;
+				}
+			}
+	 	}
+	});
+	
+	var stockList = [
+    	{ label: "3A", value: "0012", trid: "THEA.KL" },
+		{ label: "AASIA", value: "7054", trid: "AASB.KL" },
+		{ label: "AAX", value: "5238", trid: "AIRX.KL" },
+		{ label: "AAXWA", value: "5238WA", trid: "" },
+		{ label: "ABLEGRP", value: "7086", trid: "ABEL.KL" },
+		{ label: "ABMB", value: "2488", trid: "ALFG.KL" },
+		{ label: "ACCSOFT", value: "0018", trid: "ACCS.KL" },
+		{ label: "ACCSOFTWA", value: "0018WA", trid: "" },
+		{ label: "ACME", value: "7131", trid: "ACME.KL" },
+		{ label: "ACOSTEC", value: "7120", trid: "ACOU.KL" },
+		{ label: "ADVCON", value: "5281", trid: "" },
+		{ label: "ADVENTA", value: "7191", trid: "ADVE.KL" },
+		{ label: "ADVPKG", value: "9148", trid: "APTB.KL" },
+		{ label: "AEM", value: "7146", trid: "AEMU.KL" },
+		{ label: "AEMULUS", value: "0181", trid: "AEML.KL" },
+		{ label: "AEMWA", value: "7146WA", trid: "" },
+		{ label: "AEON", value: "6599", trid: "AEOM.KL" },
+		{ label: "AEONCR", value: "5139", trid: "ANCR.KL" },
+		{ label: "AFFIN", value: "5185", trid: "AFIN.KL" },
+		{ label: "AFUJIYA", value: "5198", trid: "ABMF.KL" },
+		{ label: "AHB", value: "7315", trid: "ARTW.KL" },
+		{ label: "AHBWB", value: "7315WB", trid: "" },
+		{ label: "AHEALTH", value: "7090", trid: "APER.KL" },
+		{ label: "AHP", value: "4952", trid: "AHBM.KL" },
+		{ label: "AIM", value: "0122", trid: "AIMD.KL" },
+		{ label: "AIRASIA", value: "5099", trid: "AIRA.KL" },
+		{ label: "AIRPORT", value: "5014", trid: "MAHB.KL" },
+		{ label: "AISB", value: "2682", trid: "AISS.KL" },
+		{ label: "AJI", value: "2658", trid: "AJIN.KL" },
+		{ label: "AJIYA", value: "7609", trid: "AJIY.KL" },
+		{ label: "AJIYAWA", value: "7609WA", trid: "" },
+		{ label: "AKNIGHT", value: "9954", trid: "ASKN.KL" },
+		{ label: "ALAM", value: "5115", trid: "ALMT.KL" },
+		{ label: "ALAQAR", value: "5116", trid: "ALQA.KL" },
+		{ label: "ALCOM", value: "2674", trid: "AMMS.KL" },
+		{ label: "ALLIANZ", value: "1163", trid: "AINM.KL" },
+		{ label: "ALSREIT", value: "5269", trid: "ALSA.KL" },
+		{ label: "AMBANK", value: "1015", trid: "AMMB.KL" },
+		{ label: "AMEDIA", value: "0159", trid: "ASMG.KL" },
+		{ label: "AMFIRST", value: "5120", trid: "AMFL.KL" },
+		{ label: "AMPROP", value: "1007", trid: "AMCO.KL" },
+		{ label: "AMTEK", value: "7051", trid: "AMKH.KL" },
+		{ label: "AMTEL", value: "7031", trid: "AMTH.KL" },
+		{ label: "AMVERTON", value: "5959", trid: "AMRE.KL" },
+		{ label: "AMWAY", value: "6351", trid: "AMWA.KL" },
+		{ label: "ANALABS", value: "7083", trid: "ANRE.KL" },
+		{ label: "ANCOM", value: "4758", trid: "ACBM.KL" },
+		{ label: "ANCOMLB", value: "0048", trid: "ANCO.KL" },
+		{ label: "ANNJOO", value: "6556", trid: "ANNJ.KL" },
+		{ label: "ANZO", value: "9342", trid: "ANZO.KL" },
+		{ label: "ANZOWA", value: "9342WA", trid: "" },
+		{ label: "ANZOWB", value: "9342WB", trid: "" },
+		{ label: "ANZOWC", value: "9342WC", trid: "" },
+		{ label: "APB", value: "5568", trid: "APBS.KL" },
+		{ label: "APEX", value: "5088", trid: "APES.KL" },
+		{ label: "APFT", value: "5194", trid: "APFT.KL" },
+		{ label: "APFTWA", value: "5194WA", trid: "" },
+		{ label: "APM", value: "5015", trid: "APMA.KL" },
+		{ label: "APOLLO", value: "6432", trid: "AFHB.KL" },
+		{ label: "APPASIA", value: "0119", trid: "APPA.KL" },
+		{ label: "APPASIAWA", value: "0119WA", trid: "" },
+		{ label: "ARANK", value: "7214", trid: "ARNK.KL" },
+		{ label: "ARK", value: "7007", trid: "ARKS.KL" },
+		{ label: "ARKWB", value: "7007WB", trid: "" },
+		{ label: "ARMADA", value: "5210", trid: "BUAB.KL" },
+		{ label: "ARREIT", value: "5127", trid: "AMRY.KL" },
+		{ label: "ASB", value: "1481", trid: "ADVA.KL" },
+		{ label: "ASDION", value: "0068", trid: "ASDN.KL" },
+		{ label: "ASDIONWB", value: "0068WB", trid: "" },
+		{ label: "ASIABRN", value: "7722", trid: "ASIA.KL" },
+		{ label: "ASIAFLE", value: "7129", trid: "AFCB.KL" },
+		{ label: "ASIAPAC", value: "4057", trid: "APHB.KL" },
+		{ label: "ASIAPACWB", value: "4057WB", trid: "" },
+		{ label: "ASIAPLY", value: "0105", trid: "ASPY.KL" },
+		{ label: "ASIAPLYWA", value: "0105WA", trid: "" },
+		{ label: "ASIAPLYWB", value: "0105WB", trid: "" },
+		{ label: "ASTINO", value: "7162", trid: "ATNO.KL" },
+		{ label: "ASTRO", value: "6399", trid: "ASTR.KL" },
+		{ label: "AT", value: "0072", trid: "ATSM.KL" },
+		{ label: "ATLAN", value: "7048", trid: "ATLA.KL" },
+		{ label: "ATRIUM", value: "5130", trid: "ATRL.KL" },
+		{ label: "ATTA", value: "7099", trid: "ATTA.KL" },
+		{ label: "ATTAWB", value: "7099WB", trid: "" },
+		{ label: "ATTAWC", value: "7099WC", trid: "" },
+		{ label: "ATURMJU", value: "7181", trid: "ATUR.KL" },
+		{ label: "ATWA", value: "0072WA", trid: "" },
+		{ label: "ATWB", value: "0072WB", trid: "" },
+		{ label: "AVI", value: "8885", trid: "RPAC.KL" },
+		{ label: "AWC", value: "7579", trid: "AWCF.KL" },
+		{ label: "AXIATA", value: "6888", trid: "AXIA.KL" },
+		{ label: "AXREIT", value: "5106", trid: "AXSR.KL" },
+		{ label: "AYER", value: "2305", trid: "TAHP.KL" },
+		{ label: "AYS", value: "5021", trid: "AYSV.KL" },
+		{ label: "AZRB", value: "7078", trid: "AZRB.KL" },
+		{ label: "AZRBWA", value: "7078WA", trid: "" },
+		{ label: "BAHVEST", value: "0098", trid: "BAQH.KL" },
+		{ label: "BAHVESTWA", value: "0098WA", trid: "" },
+		{ label: "BARAKAH", value: "7251", trid: "BARA.KL" },
+		{ label: "BAT", value: "4162", trid: "BATO.KL" },
+		{ label: "BAUTO", value: "5248", trid: "BERA.KL" },
+		{ label: "BCB", value: "6602", trid: "BCBB.KL" },
+		{ label: "BCMALL", value: "0187", trid: "BCMA.KL" },
+		{ label: "BDB", value: "6173", trid: "BDBS.KL" },
+		{ label: "BENALEC", value: "5190", trid: "BENL.KL" },
+		{ label: "BERTAM", value: "9814", trid: "BERM.KL" },
+		{ label: "BHIC", value: "8133", trid: "BHIB.KL" },
+		{ label: "BIG", value: "7005", trid: "BIGI.KL" },
+		{ label: "BIMB", value: "5258", trid: "BIMB.KL" },
+		{ label: "BIMBWA", value: "5258WA", trid: "" },
+		{ label: "BINACOM", value: "0195", trid: "" },
+		{ label: "BINTAI", value: "6998", trid: "BKCB.KL" },
+		{ label: "BINTAIWA", value: "6998WA", trid: "" },
+		{ label: "BIOHLDG", value: "0179", trid: "BIOA.KL" },
+		{ label: "BIOHLDGWA", value: "0179WA", trid: "" },
+		{ label: "BIOOSMO", value: "7243", trid: "BIOO.KL" },
+		{ label: "BIPORT", value: "5032", trid: "BPOT.KL" },
+		{ label: "BJASSET", value: "3239", trid: "BERJ.KL" },
+		{ label: "BJCORP", value: "3395", trid: "BGRO.KL" },
+		{ label: "BJCORPWB", value: "3395WB", trid: "" },
+		{ label: "BJCORPWC", value: "3395WC", trid: "" },
+		{ label: "BJFOOD", value: "5196", trid: "BJFO.KL" },
+		{ label: "BJLAND", value: "4219", trid: "BLAD.KL" },
+		{ label: "BJMEDIA", value: "6025", trid: "BJME.KL" },
+		{ label: "BJTOTO", value: "1562", trid: "BSTB.KL" },
+		{ label: "BKAWAN", value: "1899", trid: "BTKW.KL" },
+		{ label: "BKOON", value: "7187", trid: "BKGB.KL" },
+		{ label: "BKOONWA", value: "7187WA", trid: "" },
+		{ label: "BLDPLNT", value: "5069", trid: "BLDN.KL" },
+		{ label: "BOILERM", value: "0168", trid: "BOIL.KL" },
+		{ label: "BONIA", value: "9288", trid: "BONI.KL" },
+		{ label: "BORNOIL", value: "7036", trid: "BRNL.KL" },
+		{ label: "BORNOILWC", value: "7036WC", trid: "" },
+		{ label: "BORNOILWD", value: "7036WD", trid: "" },
+		{ label: "BOXPAK", value: "6297", trid: "BPAK.KL" },
+		{ label: "BOXPAKWA", value: "6297WA", trid: "" },
+		{ label: "BPLANT", value: "5254", trid: "BOPL.KL" },
+		{ label: "BPPLAS", value: "5100", trid: "BPPL.KL" },
+		{ label: "BPURI", value: "5932", trid: "BPUR.KL" },
+		{ label: "BRAHIMS", value: "9474", trid: "BHBD.KL" },
+		{ label: "BREM", value: "8761", trid: "BREM.KL" },
+		{ label: "BRIGHT", value: "9938", trid: "BPAC.KL" },
+		{ label: "BRIGHTWB", value: "9938WB", trid: "" },
+		{ label: "BSLCORP", value: "7221", trid: "BSLC.KL" },
+		{ label: "BSTEAD", value: "2771", trid: "BOUS.KL" },
+		{ label: "BTECH", value: "0011", trid: "BECH.KL" },
+		{ label: "BTM", value: "7188", trid: "BTMR.KL" },
+		{ label: "BTMWA", value: "7188WA", trid: "" },
+		{ label: "BTMWB", value: "7188WB", trid: "" },
+		{ label: "BURSA", value: "1818", trid: "BMYS.KL" },
+		{ label: "CAB", value: "7174", trid: "CABC.KL" },
+		{ label: "CABNET", value: "0191", trid: "" },
+		{ label: "CABWA", value: "7174WA", trid: "" },
+		{ label: "CAELY", value: "7154", trid: "CAEY.KL" },
+		{ label: "CAMRES", value: "7128", trid: "CRSM.KL" },
+		{ label: "CANONE", value: "5105", trid: "CNON.KL" },
+		{ label: "CAP", value: "5229", trid: "CAPH.KL" },
+		{ label: "CAREPLS", value: "0163", trid: "CARE.KL" },
+		{ label: "CARIMIN", value: "5257", trid: "CARM.KL" },
+		{ label: "CARING", value: "5245", trid: "CARI.KL" },
+		{ label: "CARLSBG", value: "2836", trid: "CBMS.KL" },
+		{ label: "CBIP", value: "7076", trid: "CBIP.KL" },
+		{ label: "CBIPWA", value: "7076WA", trid: "" },
+		{ label: "CCB", value: "2925", trid: "CYCB.KL" },
+		{ label: "CCK", value: "7035", trid: "CCKH.KL" },
+		{ label: "CCM", value: "2879", trid: "CLMS.KL" },
+		{ label: "CCMDBIO", value: "7148", trid: "CCMD.KL" },
+		{ label: "CENSOF", value: "5195", trid: "CNSH.KL" },
+		{ label: "CENSOFWB", value: "5195WB", trid: "" },
+		{ label: "CENTURY", value: "7117", trid: "CTLH.KL" },
+		{ label: "CEPAT", value: "8982", trid: "CPWA.KL" },
+		{ label: "CEPCO", value: "8435", trid: "CONC.KL" },
+		{ label: "CFM", value: "8044", trid: "CFMS.KL" },
+		{ label: "CHEETAH", value: "7209", trid: "CETH.KL" },
+		{ label: "CHHB", value: "5738", trid: "CHHB.KL" },
+		{ label: "CHINHIN", value: "5273", trid: "CHIU.KL" },
+		{ label: "CHINTEK", value: "1929", trid: "CTPB.KL" },
+		{ label: "CHINWEL", value: "5007", trid: "CWHB.KL" },
+		{ label: "CHOOBEE", value: "5797", trid: "CHOO.KL" },
+		{ label: "CHUAN", value: "7016", trid: "CHRB.KL" },
+		{ label: "CICB", value: "8052", trid: "CICM.KL" },
+		{ label: "CIHLDG", value: "2828", trid: "CIHB.KL" },
+		{ label: "CIMB", value: "1023", trid: "CIMB.KL" },
+		{ label: "CLIQ", value: "5234", trid: "CLIQ.KL" },
+		{ label: "CME", value: "7018", trid: "CMEG.KL" },
+		{ label: "CMMT", value: "5180", trid: "CAMA.KL" },
+		{ label: "CMSB", value: "2852", trid: "CMSM.KL" },
+		{ label: "CNASIA", value: "7986", trid: "CNAC.KL" },
+		{ label: "CNI", value: "5104", trid: "CNIH.KL" },
+		{ label: "CNOUHUA", value: "5188", trid: "COWH.KL" },
+		{ label: "COASTAL", value: "5071", trid: "CTAL.KL" },
+		{ label: "COCOLND", value: "7205", trid: "CCLD.KL" },
+		{ label: "COMCORP", value: "7195", trid: "CMNL.KL" },
+		{ label: "COMFORT", value: "2127", trid: "COMF.KL" },
+		{ label: "COMPLET", value: "5136", trid: "CPLG.KL" },
+		{ label: "COMPUGT", value: "5037", trid: "CPGT.KL" },
+		{ label: "CONNECT", value: "0102", trid: "CCTY.KL" },
+		{ label: "CONNECTWA", value: "0102WA", trid: "" },
+		{ label: "CONNECTWB", value: "0102WB", trid: "" },
+		{ label: "CRESBLD", value: "8591", trid: "CREH.KL" },
+		{ label: "CRESNDO", value: "6718", trid: "CREC.KL" },
+		{ label: "CSCENIC", value: "7202", trid: "CSCB.KL" },
+		{ label: "CSCSTEL", value: "5094", trid: "CSTH.KL" },
+		{ label: "CSL", value: "5214", trid: "CHST.KL" },
+		{ label: "CUSCAPI", value: "0051", trid: "CUSC.KL" },
+		{ label: "CUSCAPIWA", value: "0051WA", trid: "" },
+		{ label: "CVIEW", value: "5049", trid: "CVIE.KL" },
+		{ label: "CWG", value: "9423", trid: "CHEE.KL" },
+		{ label: "CYL", value: "7157", trid: "CYLC.KL" },
+		{ label: "CYMAO", value: "5082", trid: "CYMA.KL" },
+		{ label: "CYPARK", value: "5184", trid: "CYPR.KL" },
+		{ label: "D&O", value: "7204", trid: "DOVT.KL" },
+		{ label: "DAIBOCI", value: "8125", trid: "DPPM.KL" },
+		{ label: "DAIBOCIWB", value: "8125WB", trid: "" },
+		{ label: "DAIMAN", value: "5355", trid: "DAIM.KL" },
+		{ label: "DANCO", value: "5276", trid: "DNCO.KL" },
+		{ label: "DANCOWA", value: "5276WA", trid: "" },
+		{ label: "DATAPRP", value: "8338", trid: "DATA.KL" },
+		{ label: "DAYA", value: "0091", trid: "DAYA.KL" },
+		{ label: "DAYANG", value: "5141", trid: "DEHB.KL" },
+		{ label: "DBE", value: "7179", trid: "DBEG.KL" },
+		{ label: "DBEWB", value: "7179WB", trid: "" },
+		{ label: "DBHD", value: "3484", trid: "DAMA.KL" },
+		{ label: "DBHDWA", value: "3484WA", trid: "" },
+		{ label: "DEGEM", value: "7119", trid: "DEGM.KL" },
+		{ label: "DELEUM", value: "5132", trid: "DLEU.KL" },
+		{ label: "DENKO", value: "8176", trid: "DICM.KL" },
+		{ label: "DESTINI", value: "7212", trid: "DEST.KL" },
+		{ label: "DGB", value: "0152", trid: "DGBA.KL" },
+		{ label: "DGBWA", value: "0152WA", trid: "" },
+		{ label: "DGSB", value: "0131", trid: "DGSB.KL" },
+		{ label: "DIALOG", value: "7277", trid: "DIAL.KL" },
+		{ label: "DIGI", value: "6947", trid: "DSOM.KL" },
+		{ label: "DIGISTA", value: "0029", trid: "DIGS.KL" },
+		{ label: "DIGISTAWB", value: "0029WB", trid: "" },
+		{ label: "DKLS", value: "7528", trid: "DKLS.KL" },
+		{ label: "DKSH", value: "5908", trid: "DELM.KL" },
+		{ label: "DLADY", value: "3026", trid: "DBMS.KL" },
+		{ label: "DNEX", value: "4456", trid: "DNEX.KL" },
+		{ label: "DNEXWD", value: "4456WD", trid: "" },
+		{ label: "DNONCE", value: "7114", trid: "DNCE.KL" },
+		{ label: "DNONCEWA", value: "7114WA", trid: "" },
+		{ label: "DOLMITE", value: "5835", trid: "DOLC.KL" },
+		{ label: "DOLPHIN", value: "5265", trid: "DOLP.KL" },
+		{ label: "DOLPHINWA", value: "5265WA", trid: "" },
+		{ label: "DOMINAN", value: "7169", trid: "DOMN.KL" },
+		{ label: "DOMINANWA", value: "7169WA", trid: "" },
+		{ label: "DPS", value: "7198", trid: "DPSS.KL" },
+		{ label: "DPSWB", value: "7198WB", trid: "" },
+		{ label: "DRBHCOM", value: "1619", trid: "DRBM.KL" },
+		{ label: "DSONIC", value: "5216", trid: "DSON.KL" },
+		{ label: "DUFU", value: "7233", trid: "DUFU.KL" },
+		{ label: "DUTALND", value: "3948", trid: "DUTA.KL" },
+		{ label: "E&O", value: "3417", trid: "ENOB.KL" },
+		{ label: "E&OWB", value: "3417WB", trid: "" },
+		{ label: "EAH", value: "0154", trid: "EAHL.KL" },
+		{ label: "EAHWB", value: "0154WB", trid: "" },
+		{ label: "EAHWC", value: "0154WC", trid: "" },
+		{ label: "EAHWD", value: "0154WD", trid: "" },
+		{ label: "EASTLND", value: "2097", trid: "EAST.KL" },
+		{ label: "EATECH", value: "5259", trid: "EATE.KL" },
+		{ label: "ECM", value: "2143", trid: "ECMA.KL" },
+		{ label: "ECOFIRS", value: "3557", trid: "ECOF.KL" },
+		{ label: "ECOFIRSWC", value: "3557WC", trid: "" },
+		{ label: "ECONBHD", value: "5253", trid: "ECOH.KL" },
+		{ label: "ECONBHDWA", value: "5253WA", trid: "" },
+		{ label: "ECOWLD", value: "8206", trid: "ECOW.KL" },
+		{ label: "ECOWLDWA", value: "8206WA", trid: "" },
+		{ label: "ECS", value: "5162", trid: "ECSI.KL" },
+		{ label: "EDARAN", value: "5036", trid: "EDSB.KL" },
+		{ label: "EDEN", value: "7471", trid: "EDEN.KL" },
+		{ label: "EDGENTA", value: "1368", trid: "UEME.KL" },
+		{ label: "EDUSPEC", value: "0107", trid: "EDUS.KL" },
+		{ label: "EDUSPECWA", value: "0107WA", trid: "" },
+		{ label: "EFFICEN", value: "0064", trid: "ECES.KL" },
+		{ label: "EFORCE", value: "0065", trid: "EXFM.KL" },
+		{ label: "EFORCEWA", value: "0065WA", trid: "" },
+		{ label: "EG", value: "8907", trid: "EGCM.KL" },
+		{ label: "EGWC", value: "8907WC", trid: "" },
+		{ label: "EIG", value: "5081", trid: "ESTH.KL" },
+		{ label: "EITA", value: "5208", trid: "EITA.KL" },
+		{ label: "EKA", value: "7182", trid: "EKAN.KL" },
+		{ label: "EKAWA", value: "7182WA", trid: "" },
+		{ label: "EKOVEST", value: "8877", trid: "EKOV.KL" },
+		{ label: "EKOVESTWB", value: "8877WB", trid: "" },
+		{ label: "EKSONS", value: "9016", trid: "EKSN.KL" },
+		{ label: "ELKDESA", value: "5228", trid: "ELKD.KL" },
+		{ label: "ELSOFT", value: "0090", trid: "ELSR.KL" },
+		{ label: "EMETALL", value: "7217", trid: "EONM.KL" },
+		{ label: "EMICO", value: "9091", trid: "EMIC.KL" },
+		{ label: "ENCORP", value: "6076", trid: "ENCR.KL" },
+		{ label: "ENGKAH", value: "7149", trid: "ENGH.KL" },
+		{ label: "ENGTEX", value: "5056", trid: "ETEX.KL" },
+		{ label: "ENRA", value: "8613", trid: "ENRA.KL" },
+		{ label: "EPMB", value: "7773", trid: "EPMB.KL" },
+		{ label: "ESAFE", value: "0190", trid: "" },
+		{ label: "ESCERAM", value: "0100", trid: "ESCM.KL" },
+		{ label: "EUPE", value: "6815", trid: "EUPE.KL" },
+		{ label: "EURO", value: "7208", trid: "ERHB.KL" },
+		{ label: "EUROSP", value: "7094", trid: "ESAN.KL" },
+		{ label: "EVERGRN", value: "5101", trid: "EVGN.KL" },
+		{ label: "EWEIN", value: "7249", trid: "EWEI.KL" },
+		{ label: "EWINT", value: "5283", trid: "" },
+		{ label: "EWINTWA", value: "5283WA", trid: "" },
+		{ label: "F&N", value: "3689", trid: "FRAS.KL" },
+		{ label: "FACBIND", value: "2984", trid: "FACN.KL" },
+		{ label: "FAJAR", value: "7047", trid: "FAJA.KL" },
+		{ label: "FAJARWB", value: "7047WB", trid: "" },
+		{ label: "FAREAST", value: "5029", trid: "FEHS.KL" },
+		{ label: "FARLIM", value: "6041", trid: "FLIM.KL" },
+		{ label: "FAVCO", value: "7229", trid: "FVCO.KL" },
+		{ label: "FCW", value: "2755", trid: "FCWH.KL" },
+		{ label: "FFHB", value: "8605", trid: "FFHB.KL" },
+		{ label: "FGV", value: "5222", trid: "FGVH.KL" },
+		{ label: "FIAMMA", value: "6939", trid: "FIAM.KL" },
+		{ label: "FIAMMAWB", value: "6939WB", trid: "" },
+		{ label: "FIBON", value: "0149", trid: "FIBN.KL" },
+		{ label: "FIMACOR", value: "3107", trid: "FIMA.KL" },
+		{ label: "FINTEC", value: "0150", trid: "ABTB.KL" },
+		{ label: "FINTECWA", value: "0150WA", trid: "" },
+		{ label: "FINTECWB", value: "0150WB", trid: "" },
+		{ label: "FITTERS", value: "9318", trid: "FITT.KL" },
+		{ label: "FITTERSWB", value: "9318WB", trid: "" },
+		{ label: "FLBHD", value: "5197", trid: "FOLU.KL" },
+		{ label: "FOCUS", value: "0116", trid: "FCDY.KL" },
+		{ label: "FOCUSP", value: "0157", trid: "FOPT.KL" },
+		{ label: "FOCUSWC", value: "0116WC", trid: "" },
+		{ label: "FPGROUP", value: "5277", trid: "FOUN.KL" },
+		{ label: "FPI", value: "9172", trid: "FPIB.KL" },
+		{ label: "FREIGHT", value: "7210", trid: "FMHB.KL" },
+		{ label: "FRONTKN", value: "0128", trid: "FRKN.KL" },
+		{ label: "FSBM", value: "9377", trid: "FUJI.KL" },
+		{ label: "FSBMWA", value: "9377WA", trid: "" },
+		{ label: "G3", value: "7184", trid: "YNGB.KL" },
+		{ label: "G3WA", value: "7184WA", trid: "" },
+		{ label: "GADANG", value: "9261", trid: "GADA.KL" },
+		{ label: "GADANGWB", value: "9261WB", trid: "" },
+		{ label: "GAMUDA", value: "5398", trid: "GAMU.KL" },
+		{ label: "GAMUDAWE", value: "5398WE", trid: "" },
+		{ label: "GASMSIA", value: "5209", trid: "GASM.KL" },
+		{ label: "GBGAQRS", value: "5226", trid: "GAQR.KL" },
+		{ label: "GBGAQRSWA", value: "5226WA", trid: "" },
+		{ label: "GCB", value: "5102", trid: "GNCH.KL" },
+		{ label: "GCE", value: "5592", trid: "GRAN.KL" },
+		{ label: "GDB", value: "0198", trid: "" },
+		{ label: "GDEX", value: "0078", trid: "GDEX.KL" },
+		{ label: "GDEXWB", value: "0078WB", trid: "" },
+		{ label: "GENETEC", value: "0104", trid: "GTCY.KL" },
+		{ label: "GENM", value: "4715", trid: "GENM.KL" },
+		{ label: "GENP", value: "2291", trid: "GENP.KL" },
+		{ label: "GENPWA", value: "2291WA", trid: "" },
+		{ label: "GENTING", value: "3182", trid: "GENT.KL" },
+		{ label: "GENTINGWA", value: "3182WA", trid: "" },
+		{ label: "GESHEN", value: "7197", trid: "GESH.KL" },
+		{ label: "GETS", value: "5079", trid: "KBES.KL" },
+		{ label: "GFM", value: "0039", trid: "GFMS.KL" },
+		{ label: "GHLSYS", value: "0021", trid: "GHLS.KL" },
+		{ label: "GKENT", value: "3204", trid: "GKMS.KL" },
+		{ label: "GLBHD", value: "7382", trid: "GOLD.KL" },
+		{ label: "GLOMAC", value: "5020", trid: "GLOM.KL" },
+		{ label: "GLOTEC", value: "5220", trid: "GLOT.KL" },
+		{ label: "GMUTUAL", value: "9962", trid: "GMUT.KL" },
+		{ label: "GNB", value: "0045", trid: "GNET.KL" },
+		{ label: "GOB", value: "1147", trid: "GLOL.KL" },
+		{ label: "GOBWA", value: "1147WA", trid: "" },
+		{ label: "GOCEAN", value: "0074", trid: "GOCE.KL" },
+		{ label: "GOCEANWA", value: "0074WA", trid: "" },
+		{ label: "GOODWAY", value: "7192", trid: "GWAY.KL" },
+		{ label: "GOPENG", value: "2135", trid: "GOPK.KL" },
+		{ label: "GPA", value: "7096", trid: "GPAH.KL" },
+		{ label: "GPACKET", value: "0082", trid: "GRNP.KL" },
+		{ label: "GPAWA", value: "7096WA", trid: "" },
+		{ label: "GPHAROS", value: "5649", trid: "GROS.KL" },
+		{ label: "GRANFLO", value: "0056", trid: "GRFL.KL" },
+		{ label: "GREENYB", value: "0136", trid: "GRYB.KL" },
+		{ label: "GSB", value: "7077", trid: "GSBR.KL" },
+		{ label: "GTRONIC", value: "7022", trid: "GNIC.KL" },
+		{ label: "GUH", value: "3247", trid: "GUHB.KL" },
+		{ label: "GUNUNG", value: "7676", trid: "GUNU.KL" },
+		{ label: "GUNUNGWB", value: "7676WB", trid: "" },
+		{ label: "GUOCO", value: "1503", trid: "GUOL.KL" },
+		{ label: "HAIO", value: "7668", trid: "HAIO.KL" },
+		{ label: "HALEX", value: "5151", trid: "HLEX.KL" },
+		{ label: "HANDAL", value: "7253", trid: "HDRB.KL" },
+		{ label: "HAPSENG", value: "3034", trid: "HAPS.KL" },
+		{ label: "HARBOUR", value: "2062", trid: "HARR.KL" },
+		{ label: "HARBOURWC", value: "2062WC", trid: "" },
+		{ label: "HARISON", value: "5008", trid: "HSON.KL" },
+		{ label: "HARNLEN", value: "7501", trid: "HLEN.KL" },
+		{ label: "HARTA", value: "5168", trid: "HTHB.KL" },
+		{ label: "HBGLOB", value: "5187", trid: "HBGL.KL" },
+		{ label: "HCK", value: "7105", trid: "HCKC.KL" },
+		{ label: "HCKWA", value: "7105WA", trid: "" },
+		{ label: "HEIM", value: "3255", trid: "HEIN.KL" },
+		{ label: "HEKTAR", value: "5121", trid: "HEKR.KL" },
+		{ label: "HENGYUAN", value: "4324", trid: "SLRS.KL" },
+		{ label: "HEVEA", value: "5095", trid: "HEVE.KL" },
+		{ label: "HEVEAWB", value: "5095WB", trid: "" },
+		{ label: "HEXZA", value: "3298", trid: "HXZS.KL" },
+		{ label: "HHGROUP", value: "0175", trid: "HENG.KL" },
+		{ label: "HHHCORP", value: "0160", trid: "HIAP.KL" },
+		{ label: "HIAPTEK", value: "5072", trid: "HTVE.KL" },
+		{ label: "HIAPTEKWB", value: "5072WB", trid: "" },
+		{ label: "HIBISCS", value: "5199", trid: "HIBI.KL" },
+		{ label: "HIBISCSWC", value: "5199WC", trid: "" },
+		{ label: "HIGHTEC", value: "7033", trid: "KHLH.KL" },
+		{ label: "HIL", value: "8443", trid: "HILI.KL" },
+		{ label: "HILWB", value: "8443WB", trid: "" },
+		{ label: "HLBANK", value: "5819", trid: "HLBB.KL" },
+		{ label: "HLCAP", value: "5274", trid: "HLGC.KL" },
+		{ label: "HLFG", value: "1082", trid: "HLCB.KL" },
+		{ label: "HLIND", value: "3301", trid: "HLIB.KL" },
+		{ label: "HLT", value: "0188", trid: "HLTG.KL" },
+		{ label: "HLTWA", value: "0188WA", trid: "" },
+		{ label: "HOHUP", value: "5169", trid: "HHCS.KL" },
+		{ label: "HOHUPWA", value: "5169WA", trid: "" },
+		{ label: "HOKHENG", value: "5165", trid: "HOCK.KL" },
+		{ label: "HOMERIZ", value: "5160", trid: "HOME.KL" },
+		{ label: "HOMERIZWA", value: "5160WA", trid: "" },
+		{ label: "HOOVER", value: "7010", trid: "GHOO.KL" },
+		{ label: "HOVID", value: "7213", trid: "HOVI.KL" },
+		{ label: "HOVIDWB", value: "7213WB", trid: "" },
+		{ label: "HSL", value: "6238", trid: "HSLB.KL" },
+		{ label: "HSPLANT", value: "5138", trid: "HAPP.KL" },
+		{ label: "HSSEB", value: "0185", trid: "HSSE.KL" },
+		{ label: "HSSEBWA", value: "0185WA", trid: "" },
+		{ label: "HTPADU", value: "5028", trid: "HEIT.KL" },
+		{ label: "HUAAN", value: "2739", trid: "SNHN.KL" },
+		{ label: "HUAYANG", value: "5062", trid: "HUAY.KL" },
+		{ label: "HUBLINE", value: "7013", trid: "HUBE.KL" },
+		{ label: "HUBLINEWA", value: "7013WA", trid: "" },
+		{ label: "HUBLINEWB", value: "7013WB", trid: "" },
+		{ label: "HUMEIND", value: "5000", trid: "HUIN.KL" },
+		{ label: "HUPSENG", value: "5024", trid: "HSIB.KL" },
+		{ label: "HWATAI", value: "8478", trid: "HWAT.KL" },
+		{ label: "HWGB", value: "9601", trid: "HOWA.KL" },
+		{ label: "HWGBWD", value: "9601WD", trid: "" },
+		{ label: "IBHD", value: "4251", trid: "IBHD.KL" },
+		{ label: "IBHDWA", value: "4251WA", trid: "" },
+		{ label: "IBRACO", value: "5084", trid: "IBRC.KL" },
+		{ label: "ICAP", value: "5108", trid: "ICBZ.KL" },
+		{ label: "ICON", value: "5255", trid: "ICON.KL" },
+		{ label: "IDEAL", value: "9687", trid: "IUBN.KL" },
+		{ label: "IDEALWB", value: "9687WB", trid: "" },
+		{ label: "IDMENSN", value: "0174", trid: "DIME.KL" },
+		{ label: "IDMENSNWA", value: "0174WA", trid: "" },
+		{ label: "IFCAMSC", value: "0023", trid: "IFCA.KL" },
+		{ label: "IGBB", value: "5606", trid: "GLIS.KL" },
+		{ label: "IGBREIT", value: "5227", trid: "IGRE.KL" },
+		{ label: "IHH", value: "5225", trid: "IHHH.KL" },
+		{ label: "IJACOBS", value: "0162", trid: "IJAC.KL" },
+		{ label: "IJM", value: "3336", trid: "IJMS.KL" },
+		{ label: "IJMPLNT", value: "2216", trid: "IJMP.KL" },
+		{ label: "IKHMAS", value: "5268", trid: "IKHM.KL" },
+		{ label: "ILB", value: "5614", trid: "ILBM.KL" },
+		{ label: "IMASPRO", value: "7222", trid: "IMSP.KL" },
+		{ label: "INARI", value: "0166", trid: "INAR.KL" },
+		{ label: "INARIWA", value: "0166WA", trid: "" },
+		{ label: "INARIWB", value: "0166WB", trid: "" },
+		{ label: "INCKEN", value: "2607", trid: "IKEN.KL" },
+		{ label: "INIX", value: "0094", trid: "INIX.KL" },
+		{ label: "INIXWA", value: "0094WA", trid: "" },
+		{ label: "INNITY", value: "0147", trid: "INNY.KL" },
+		{ label: "INNO", value: "6262", trid: "INNO.KL" },
+		{ label: "INSAS", value: "3379", trid: "INSS.KL" },
+		{ label: "INSASWB", value: "3379WB", trid: "" },
+		{ label: "INTA", value: "0192", trid: "" },
+		{ label: "IOICORP", value: "1961", trid: "IOIB.KL" },
+		{ label: "IOIPG", value: "5249", trid: "IOIP.KL" },
+		{ label: "IPMUDA", value: "5673", trid: "IPMU.KL" },
+		{ label: "IQGROUP", value: "5107", trid: "IQGH.KL" },
+		{ label: "IREKA", value: "8834", trid: "IRKA.KL" },
+		{ label: "IREKAWB", value: "8834WB", trid: "" },
+		{ label: "IRETEX", value: "7183", trid: "IREE.KL" },
+		{ label: "IRETEXWA", value: "7183WA", trid: "" },
+		{ label: "IRIS", value: "0010", trid: "IRIB.KL" },
+		{ label: "ITRONIC", value: "9393", trid: "INDU.KL" },
+		{ label: "IVORY", value: "5175", trid: "IVRY.KL" },
+		{ label: "IWCITY", value: "1589", trid: "IWCI.KL" },
+		{ label: "JADI", value: "7223", trid: "JADI.KL" },
+		{ label: "JAG", value: "0024", trid: "JAGB.KL" },
+		{ label: "JAGWA", value: "0024WA", trid: "" },
+		{ label: "JAGWB", value: "0024WB", trid: "" },
+		{ label: "JAKS", value: "4723", trid: "JAKS.KL" },
+		{ label: "JASKITA", value: "8648", trid: "JKBM.KL" },
+		{ label: "JAYCORP", value: "7152", trid: "JAYC.KL" },
+		{ label: "JCBNEXT", value: "0058", trid: "JCBN.KL" },
+		{ label: "JCY", value: "5161", trid: "JCYI.KL" },
+		{ label: "JERASIA", value: "8931", trid: "JERA.KL" },
+		{ label: "JETSON", value: "9083", trid: "JETS.KL" },
+		{ label: "JETSONWB", value: "9083WB", trid: "" },
+		{ label: "JFTECH", value: "0146", trid: "JFTB.KL" },
+		{ label: "JHM", value: "0127", trid: "JHMC.KL" },
+		{ label: "JIANKUN", value: "8923", trid: "JIAN.KL" },
+		{ label: "JIANKUNWA", value: "8923WA", trid: "" },
+		{ label: "JKGLAND", value: "6769", trid: "JKGL.KL" },
+		{ label: "JMR", value: "7043", trid: "JMRB.KL" },
+		{ label: "JOHAN", value: "3441", trid: "JHHS.KL" },
+		{ label: "JOHOTIN", value: "7167", trid: "JHTN.KL" },
+		{ label: "JTIASA", value: "4383", trid: "JTIA.KL" },
+		{ label: "K1", value: "0111", trid: "KONE.KL" },
+		{ label: "KAB", value: "0193", trid: "" },
+		{ label: "KAMDAR", value: "8672", trid: "KMDA.KL" },
+		{ label: "KANGER", value: "0170", trid: "KANG.KL" },
+		{ label: "KANGERWA", value: "0170WA", trid: "" },
+		{ label: "KAREX", value: "5247", trid: "KARE.KL" },
+		{ label: "KARYON", value: "0054", trid: "KARY.KL" },
+		{ label: "KAWAN", value: "7216", trid: "KWNF.KL" },
+		{ label: "KBUNAI", value: "3115", trid: "KRBN.KL" },
+		{ label: "KBUNAIWC", value: "3115WC", trid: "" },
+		{ label: "KEINHIN", value: "7199", trid: "KEHG.KL" },
+		{ label: "KEN", value: "7323", trid: "KENH.KL" },
+		{ label: "KENANGA", value: "6483", trid: "KNNK.KL" },
+		{ label: "KERJAYA", value: "7161", trid: "KREJ.KL" },
+		{ label: "KERJAYAWB", value: "7161WB", trid: "" },
+		{ label: "KESM", value: "9334", trid: "KESM.KL" },
+		{ label: "KEYASIC", value: "0143", trid: "KYAC.KL" },
+		{ label: "KFIMA", value: "6491", trid: "KFIM.KL" },
+		{ label: "KFM", value: "8303", trid: "KFMB.KL" },
+		{ label: "KGB", value: "0151", trid: "KELG.KL" },
+		{ label: "KGBWA", value: "0151WA", trid: "" },
+		{ label: "KGROUP", value: "0036", trid: "KGRP.KL" },
+		{ label: "KGROUPWA", value: "0036WA", trid: "" },
+		{ label: "KGROUPWB", value: "0036WB", trid: "" },
+		{ label: "KHEESAN", value: "6203", trid: "KHEE.KL" },
+		{ label: "KHIND", value: "7062", trid: "KHIN.KL" },
+		{ label: "KIALIM", value: "6211", trid: "KIAL.KL" },
+		{ label: "KIANJOO", value: "3522", trid: "KJCS.KL" },
+		{ label: "KIMHIN", value: "5371", trid: "KIMH.KL" },
+		{ label: "KIMLUN", value: "5171", trid: "KICB.KL" },
+		{ label: "KIMLUNWA", value: "5171WA", trid: "" },
+		{ label: "KINSTEL", value: "5060", trid: "KSTE.KL" },
+		{ label: "KIPREIT", value: "5280", trid: "" },
+		{ label: "KKB", value: "9466", trid: "KKBE.KL" },
+		{ label: "KLK", value: "2445", trid: "KLKK.KL" },
+		{ label: "KLUANG", value: "2453", trid: "KLRK.KL" },
+		{ label: "KMLOONG", value: "5027", trid: "KIML.KL" },
+		{ label: "KMLOONGWB", value: "5027WB", trid: "" },
+		{ label: "KNM", value: "7164", trid: "KNMP.KL" },
+		{ label: "KNMWB", value: "7164WB", trid: "" },
+		{ label: "KNUSFOR", value: "5035", trid: "KNUS.KL" },
+		{ label: "KOBAY", value: "6971", trid: "KOBA.KL" },
+		{ label: "KOMARK", value: "7017", trid: "KOMK.KL" },
+		{ label: "KOMARKWB", value: "7017WB", trid: "" },
+		{ label: "KOSSAN", value: "7153", trid: "KRIB.KL" },
+		{ label: "KOTRA", value: "0002", trid: "KOIN.KL" },
+		{ label: "KPJ", value: "5878", trid: "KPJH.KL" },
+		{ label: "KPJWB", value: "5878WB", trid: "" },
+		{ label: "KPOWER", value: "7130", trid: "KPOW.KL" },
+		{ label: "KPS", value: "5843", trid: "KPSB.KL" },
+		{ label: "KPSCB", value: "9121", trid: "KPSC.KL" },
+		{ label: "KRETAM", value: "1996", trid: "KREK.KL" },
+		{ label: "KRONO", value: "0176", trid: "KRON.KL" },
+		{ label: "KSENG", value: "3476", trid: "KSMS.KL" },
+		{ label: "KSL", value: "5038", trid: "KSLH.KL" },
+		{ label: "KSSC", value: "5192", trid: "KSSC.KL" },
+		{ label: "KSTAR", value: "5172", trid: "KSTR.KL" },
+		{ label: "KSTARWA", value: "5172WA", trid: "" },
+		{ label: "KTB", value: "4847", trid: "KSTM.KL" },
+		{ label: "KTC", value: "0180", trid: "KIMT.KL" },
+		{ label: "KUB", value: "6874", trid: "KUBM.KL" },
+		{ label: "KUCHAI", value: "2186", trid: "KCDS.KL" },
+		{ label: "KWANTAS", value: "6572", trid: "KWAN.KL" },
+		{ label: "KYM", value: "8362", trid: "KYMH.KL" },
+		{ label: "L&G", value: "3174", trid: "LAND.KL" },
+		{ label: "LAFMSIA", value: "3794", trid: "LAFA.KL" },
+		{ label: "LANDMRK", value: "1643", trid: "LMHS.KL" },
+		{ label: "LATITUD", value: "7006", trid: "LTHB.KL" },
+		{ label: "LAYHONG", value: "9385", trid: "LAYH.KL" },
+		{ label: "LAYHONGWA", value: "9385WA", trid: "" },
+		{ label: "LBALUM", value: "9326", trid: "LBAL.KL" },
+		{ label: "LBICAP", value: "8494", trid: "LBIP.KL" },
+		{ label: "LBICAPWA", value: "8494WA", trid: "" },
+		{ label: "LBS", value: "5789", trid: "LBSB.KL" },
+		{ label: "LBSWA", value: "5789WA", trid: "" },
+		{ label: "LBSWB", value: "5789WB", trid: "" },
+		{ label: "LCTH", value: "5092", trid: "LCTH.KL" },
+		{ label: "LCTITAN", value: "5284", trid: "" },
+		{ label: "LEBTECH", value: "9628", trid: "LEBT.KL" },
+		{ label: "LEESK", value: "8079", trid: "LHTM.KL" },
+		{ label: "LEONFB", value: "5232", trid: "LEON.KL" },
+		{ label: "LEWEKO", value: "8745", trid: "LEWE.KL" },
+		{ label: "LEWEKOWB", value: "8745WB", trid: "" },
+		{ label: "LFECORP", value: "7170", trid: "LFEC.KL" },
+		{ label: "LIENHOE", value: "3573", trid: "LHCK.KL" },
+		{ label: "LIIHEN", value: "7089", trid: "LHEN.KL" },
+		{ label: "LIONDIV", value: "2887", trid: "LDIV.KL" },
+		{ label: "LIONFIB", value: "8486", trid: "LIOF.KL" },
+		{ label: "LIONIND", value: "4235", trid: "LLBM.KL" },
+		{ label: "LITRAK", value: "6645", trid: "LTKH.KL" },
+		{ label: "LKL", value: "0182", trid: "LKLI.KL" },
+		{ label: "LNGRES", value: "0025", trid: "LNGB.KL" },
+		{ label: "LONBISC", value: "7126", trid: "LONB.KL" },
+		{ label: "LONBISCWA", value: "7126WA", trid: "" },
+		{ label: "LPI", value: "8621", trid: "LOND.KL" },
+		{ label: "LSTEEL", value: "9881", trid: "LEAD.KL" },
+		{ label: "LTKM", value: "7085", trid: "LTKM.KL" },
+		{ label: "LUSTER", value: "5068", trid: "LTER.KL" },
+		{ label: "LUSTERWA", value: "5068WA", trid: "" },
+		{ label: "LUSTERWB", value: "5068WB", trid: "" },
+		{ label: "LUXCHEM", value: "5143", trid: "LCBH.KL" },
+		{ label: "LYSAGHT", value: "9199", trid: "LYSA.KL" },
+		{ label: "M&G", value: "5078", trid: "SGWF.KL" },
+		{ label: "M3TECH", value: "0017", trid: "MTAB.KL" },
+		{ label: "M3TECHWA", value: "0017WA", trid: "" },
+		{ label: "MAA", value: "1198", trid: "MAAS.KL" },
+		{ label: "MAGNA", value: "7617", trid: "MAGN.KL" },
+		{ label: "MAGNAWB", value: "7617WB", trid: "" },
+		{ label: "MAGNI", value: "7087", trid: "MATE.KL" },
+		{ label: "MAGNUM", value: "3859", trid: "MAGM.KL" },
+		{ label: "MAHSING", value: "8583", trid: "MAHS.KL" },
+		{ label: "MAHSINGWC", value: "8583WC", trid: "" },
+		{ label: "MALAKOF", value: "5264", trid: "MALA.KL" },
+		{ label: "MALPAC", value: "4936", trid: "MHBS.KL" },
+		{ label: "MALTON", value: "6181", trid: "MLTO.KL" },
+		{ label: "MALTONWB", value: "6181WB", trid: "" },
+		{ label: "MANULFE", value: "1058", trid: "MNLF.KL" },
+		{ label: "MARCO", value: "3514", trid: "MRHB.KL" },
+		{ label: "MASTEEL", value: "5098", trid: "MSWK.KL" },
+		{ label: "MASTER", value: "7029", trid: "MSTP.KL" },
+		{ label: "MATANG", value: "0189", trid: "MATA.KL" },
+		{ label: "MATRIX", value: "5236", trid: "MATR.KL" },
+		{ label: "MATRIXWA", value: "5236WA", trid: "" },
+		{ label: "MAXIS", value: "6012", trid: "MXSC.KL" },
+		{ label: "MAXWELL", value: "5189", trid: "MAXW.KL" },
+		{ label: "MAXWELLWA", value: "5189WA", trid: "" },
+		{ label: "MAYBANK", value: "1155", trid: "MBBM.KL" },
+		{ label: "MAYBULK", value: "5077", trid: "MBCB.KL" },
+		{ label: "MBG", value: "5886", trid: "MINT.KL" },
+		{ label: "MBL", value: "5152", trid: "MUBL.KL" },
+		{ label: "MBLWA", value: "5152WA", trid: "" },
+		{ label: "MBMR", value: "5983", trid: "MBMR.KL" },
+		{ label: "MBSB", value: "1171", trid: "MBSS.KL" },
+		{ label: "MBWORLD", value: "7189", trid: "MBWO.KL" },
+		{ label: "MCEHLDG", value: "7004", trid: "MCEI.KL" },
+		{ label: "MCLEAN", value: "0167", trid: "MCLN.KL" },
+		{ label: "MCLEANWB", value: "0167WB", trid: "" },
+		{ label: "MCT", value: "5182", trid: "MCTB.KL" },
+		{ label: "MEDAINC", value: "5040", trid: "MDAI.KL" },
+		{ label: "MEDAINCWA", value: "5040WA", trid: "" },
+		{ label: "MEDAINCWB", value: "5040WB", trid: "" },
+		{ label: "MEDAINCWC", value: "5040WC", trid: "" },
+		{ label: "MEDIA", value: "4502", trid: "MPRM.KL" },
+		{ label: "MEDIAC", value: "5090", trid: "MDCH.KL" },
+		{ label: "MEGASUN", value: "0081", trid: "MESC.KL" },
+		{ label: "MEGASUNWA", value: "0081WA", trid: "" },
+		{ label: "MELATI", value: "5129", trid: "MEHB.KL" },
+		{ label: "MELEWAR", value: "3778", trid: "MSTM.KL" },
+		{ label: "MENANG", value: "1694", trid: "MNCS.KL" },
+		{ label: "MENANGWB", value: "1694WB", trid: "" },
+		{ label: "MENTIGA", value: "5223", trid: "MENT.KL" },
+		{ label: "MERCURY", value: "8192", trid: "MEIS.KL" },
+		{ label: "MERGE", value: "5006", trid: "MERG.KL" },
+		{ label: "MESB", value: "7234", trid: "MESB.KL" },
+		{ label: "MESBWA", value: "7234WA", trid: "" },
+		{ label: "METROD", value: "6149", trid: "MROD.KL" },
+		{ label: "MEXTER", value: "0075", trid: "MXTE.KL" },
+		{ label: "MEXTERWA", value: "0075WA", trid: "" },
+		{ label: "MFCB", value: "3069", trid: "MEGA.KL" },
+		{ label: "MFCBWA", value: "3069WA", trid: "" },
+		{ label: "MFLOUR", value: "3662", trid: "MFMS.KL" },
+		{ label: "MGB", value: "7595", trid: "MLGL.KL" },
+		{ label: "MGBWA", value: "7595WA", trid: "" },
+		{ label: "MGRC", value: "0155", trid: "MGRC.KL" },
+		{ label: "MHB", value: "5186", trid: "MHEB.KL" },
+		{ label: "MHC", value: "5026", trid: "MHCP.KL" },
+		{ label: "MICROLN", value: "0126", trid: "MCRK.KL" },
+		{ label: "MIECO", value: "5001", trid: "MIEC.KL" },
+		{ label: "MIKROMB", value: "0112", trid: "MIKB.KL" },
+		{ label: "MILUX", value: "7935", trid: "MILU.KL" },
+		{ label: "MINDA", value: "5166", trid: "ASIM.KL" },
+		{ label: "MINETEC", value: "7219", trid: "MNTH.KL" },
+		{ label: "MINETECWA", value: "7219WA", trid: "" },
+		{ label: "MINHO", value: "5576", trid: "MNHO.KL" },
+		{ label: "MINHOWC", value: "5576WC", trid: "" },
+		{ label: "MISC", value: "3816", trid: "MISC.KL" },
+		{ label: "MITRA", value: "9571", trid: "MITR.KL" },
+		{ label: "MITRAWD", value: "9571WD", trid: "" },
+		{ label: "MJPERAK", value: "8141", trid: "MJPR.KL" },
+		{ label: "MKH", value: "6114", trid: "METR.KL" },
+		{ label: "MKLAND", value: "8893", trid: "MKLH.KL" },
+		{ label: "MLAB", value: "0085", trid: "MLBS.KL" },
+		{ label: "MLABWA", value: "0085WA", trid: "" },
+		{ label: "MLABWB", value: "0085WB", trid: "" },
+		{ label: "MMAG", value: "0034", trid: "MMAG.KL" },
+		{ label: "MMAGWB", value: "0034WB", trid: "" },
+		{ label: "MMCCORP", value: "2194", trid: "MMCB.KL" },
+		{ label: "MMODE", value: "0059", trid: "MMDE.KL" },
+		{ label: "MMSV", value: "0113", trid: "MMST.KL" },
+		{ label: "MNC", value: "0103", trid: "MNCW.KL" },
+		{ label: "MNCWA", value: "0103WA", trid: "" },
+		{ label: "MNRB", value: "6459", trid: "MNRB.KL" },
+		{ label: "MPAY", value: "0156", trid: "MANS.KL" },
+		{ label: "MPCORP", value: "6548", trid: "MPLB.KL" },
+		{ label: "MPHBCAP", value: "5237", trid: "MPHB.KL" },
+		{ label: "MPI", value: "3867", trid: "MPIM.KL" },
+		{ label: "MQREIT", value: "5123", trid: "MQRE.KL" },
+		{ label: "MQTECH", value: "0070", trid: "MQTE.KL" },
+		{ label: "MQTECHWA", value: "0070WA", trid: "" },
+		{ label: "MRCB", value: "1651", trid: "MYRS.KL" },
+		{ label: "MRCBWA", value: "1651WA", trid: "" },
+		{ label: "MRCBWB", value: "1651WB", trid: "" },
+		{ label: "MSC", value: "5916", trid: "MSCB.KL" },
+		{ label: "MSM", value: "5202", trid: "MSMH.KL" },
+		{ label: "MSNIAGA", value: "5011", trid: "MNGA.KL" },
+		{ label: "MSPORTS", value: "5150", trid: "MSPT.KL" },
+		{ label: "MTDACPI", value: "5924", trid: "MTDA.KL" },
+		{ label: "MTOUCHE", value: "0092", trid: "MTOU.KL" },
+		{ label: "MTOUCHEWB", value: "0092WB", trid: "" },
+		{ label: "MTOUCHEWC", value: "0092WC", trid: "" },
+		{ label: "MTRONIC", value: "0043", trid: "MTNC.KL" },
+		{ label: "MUDA", value: "3883", trid: "MUDA.KL" },
+		{ label: "MUDAJYA", value: "5085", trid: "MJYA.KL" },
+		{ label: "MUH", value: "9539", trid: "MUHB.KL" },
+		{ label: "MUHIBAH", value: "5703", trid: "MUHI.KL" },
+		{ label: "MUIIND", value: "3891", trid: "MUIB.KL" },
+		{ label: "MUIPROP", value: "3913", trid: "MUIP.KL" },
+		{ label: "MULPHA", value: "3905", trid: "MITC.KL" },
+		{ label: "MWE", value: "3921", trid: "MWEM.KL" },
+		{ label: "MYCRON", value: "5087", trid: "MYCS.KL" },
+		{ label: "MYEG", value: "0138", trid: "MYEG.KL" },
+		{ label: "MYNEWS", value: "5275", trid: "BISO.KL" },
+		{ label: "N2N", value: "0108", trid: "NNCB.KL" },
+		{ label: "N2NWA", value: "0108WA", trid: "" },
+		{ label: "NAIM", value: "5073", trid: "NCHB.KL" },
+		{ label: "NATWIDE", value: "9806", trid: "NEXP.KL" },
+		{ label: "NESTLE", value: "4707", trid: "NESM.KL" },
+		{ label: "NETX", value: "0020", trid: "NETX.KL" },
+		{ label: "NETXWB", value: "0020WB", trid: "" },
+		{ label: "NEXGRAM", value: "0096", trid: "NEXG.KL" },
+		{ label: "NEXGRAMWA", value: "0096WA", trid: "" },
+		{ label: "NEXGRAMWB", value: "0096WB", trid: "" },
+		{ label: "NEXGRAMWC", value: "0096WC", trid: "" },
+		{ label: "NGGB", value: "7241", trid: "BHSN.KL" },
+		{ label: "NGGBWA", value: "7241WA", trid: "" },
+		{ label: "NHFATT", value: "7060", trid: "NHFH.KL" },
+		{ label: "NICE", value: "7139", trid: "NICH.KL" },
+		{ label: "NIHSIN", value: "7215", trid: "NHSN.KL" },
+		{ label: "NOTION", value: "0083", trid: "NVTE.KL" },
+		{ label: "NOTIONWC", value: "0083WC", trid: "" },
+		{ label: "NOVAMSC", value: "0026", trid: "NOVS.KL" },
+		{ label: "NPC", value: "5047", trid: "NPCR.KL" },
+		{ label: "NSOP", value: "2038", trid: "NSOS.KL" },
+		{ label: "NTPM", value: "5066", trid: "NTPM.KL" },
+		{ label: "NWP", value: "5025", trid: "NWPH.KL" },
+		{ label: "NYLEX", value: "4944", trid: "NMBS.KL" },
+		{ label: "OCB", value: "5533", trid: "OCBB.KL" },
+		{ label: "OCK", value: "0172", trid: "OCKG.KL" },
+		{ label: "OCKWA", value: "0172WA", trid: "" },
+		{ label: "OCNCASH", value: "0049", trid: "OCEA.KL" },
+		{ label: "OCR", value: "7071", trid: "OCRS.KL" },
+		{ label: "OCRWC", value: "7071WC", trid: "" },
+		{ label: "OFI", value: "7107", trid: "OFIH.KL" },
+		{ label: "OIB", value: "5827", trid: "OINT.KL" },
+		{ label: "OKA", value: "7140", trid: "OKAC.KL" },
+		{ label: "OLYMPIA", value: "3018", trid: "OLYM.KL" },
+		{ label: "OMESTI", value: "9008", trid: "OMES.KL" },
+		{ label: "OMESTIWB", value: "9008WB", trid: "" },
+		{ label: "OPCOM", value: "0035", trid: "OPCM.KL" },
+		{ label: "OPENSYS", value: "0040", trid: "OPYS.KL" },
+		{ label: "ORIENT", value: "4006", trid: "OTLS.KL" },
+		{ label: "ORION", value: "0079", trid: "ORIO.KL" },
+		{ label: "ORIONWA", value: "0079WA", trid: "" },
+		{ label: "ORNA", value: "5065", trid: "ORPA.KL" },
+		{ label: "OSK", value: "5053", trid: "OSKH.KL" },
+		{ label: "OSKVI", value: "0053", trid: "OSKV.KL" },
+		{ label: "OSKWC", value: "5053WC", trid: "" },
+		{ label: "OVERSEA", value: "0153", trid: "OVER.KL" },
+		{ label: "OWG", value: "5260", trid: "ONLY.KL" },
+		{ label: "P&O", value: "6009", trid: "PACO.KL" },
+		{ label: "PA", value: "7225", trid: "PARB.KL" },
+		{ label: "PADINI", value: "7052", trid: "PDNI.KL" },
+		{ label: "PANAMY", value: "3719", trid: "PMMY.KL" },
+		{ label: "PANPAGE", value: "0041", trid: "PANP.KL" },
+		{ label: "PANSAR", value: "8419", trid: "PANS.KL" },
+		{ label: "PANTECH", value: "5125", trid: "PNTE.KL" },
+		{ label: "PANTECHWA", value: "5125WA", trid: "" },
+		{ label: "PANTECHWB", value: "5125WB", trid: "" },
+		{ label: "PAOS", value: "5022", trid: "PAOS.KL" },
+		{ label: "PAOSWA", value: "5022WA", trid: "" },
+		{ label: "PARAGON", value: "9407", trid: "PGON.KL" },
+		{ label: "PARAMON", value: "1724", trid: "PRMS.KL" },
+		{ label: "PARKSON", value: "5657", trid: "PRKN.KL" },
+		{ label: "PARLO", value: "0022", trid: "CYBW.KL" },
+		{ label: "PASDEC", value: "6912", trid: "PDEC.KL" },
+		{ label: "PASUKGB", value: "0177", trid: "PASU.KL" },
+		{ label: "PAVREIT", value: "5212", trid: "PREI.KL" },
+		{ label: "PAWB", value: "7225WB", trid: "" },
+		{ label: "PBA", value: "5041", trid: "PBAH.KL" },
+		{ label: "PBBANK", value: "1295", trid: "PUBM.KL" },
+		{ label: "PCCS", value: "6068", trid: "PCCS.KL" },
+		{ label: "PCCSWA", value: "6068WA", trid: "" },
+		{ label: "PCHEM", value: "5183", trid: "PCGB.KL" },
+		{ label: "PDZ", value: "6254", trid: "PDZH.KL" },
+		{ label: "PDZWB", value: "6254WB", trid: "" },
+		{ label: "PECCA", value: "5271", trid: "PECC.KL" },
+		{ label: "PELIKAN", value: "5231", trid: "PELK.KL" },
+		{ label: "PENERGY", value: "5133", trid: "PTRE.KL" },
+		{ label: "PENSONI", value: "9997", trid: "PENS.KL" },
+		{ label: "PENSONIWB", value: "9997WB", trid: "" },
+		{ label: "PENTA", value: "7160", trid: "PMAS.KL" },
+		{ label: "PERDANA", value: "7108", trid: "PTRD.KL" },
+		{ label: "PERISAI", value: "0047", trid: "PPTB.KL" },
+		{ label: "PERMAJU", value: "7080", trid: "PMJU.KL" },
+		{ label: "PERSTIM", value: "5436", trid: "PSTM.KL" },
+		{ label: "PESONA", value: "8311", trid: "PESO.KL" },
+		{ label: "PESONAWC", value: "8311WC", trid: "" },
+		{ label: "PESTECH", value: "5219", trid: "PEIN.KL" },
+		{ label: "PETDAG", value: "5681", trid: "PETR.KL" },
+		{ label: "PETGAS", value: "6033", trid: "PGAS.KL" },
+		{ label: "PETONE", value: "7027", trid: "PETO.KL" },
+		{ label: "PETRONM", value: "3042", trid: "PTMR.KL" },
+		{ label: "PGLOBE", value: "3611", trid: "GBHK.KL" },
+		{ label: "PGLOBEWA", value: "3611WA", trid: "" },
+		{ label: "PHARMA", value: "7081", trid: "PHMA.KL" },
+		{ label: "PHB", value: "4464", trid: "NICB.KL" },
+		{ label: "PICORP", value: "7201", trid: "PGSV.KL" },
+		{ label: "PIE", value: "7095", trid: "PIEN.KL" },
+		{ label: "PINEAPP", value: "0006", trid: "PINE.KL" },
+		{ label: "PINEPAC", value: "1902", trid: "PIPB.KL" },
+		{ label: "PJBUMI", value: "7163", trid: "PJSB.KL" },
+		{ label: "PJBUMIWA", value: "7163WA", trid: "" },
+		{ label: "PLABS", value: "0171", trid: "PLHB.KL" },
+		{ label: "PLB", value: "7055", trid: "PLBE.KL" },
+		{ label: "PLENITU", value: "5075", trid: "PLET.KL" },
+		{ label: "PLS", value: "9695", trid: "PLSB.KL" },
+		{ label: "PMBTECH", value: "7172", trid: "PMBT.KL" },
+		{ label: "PMCORP", value: "4081", trid: "PMCS.KL" },
+		{ label: "PMETAL", value: "8869", trid: "PMET.KL" },
+		{ label: "PMETALWC", value: "8869WC", trid: "" },
+		{ label: "PMHLDG", value: "1287", trid: "PGKN.KL" },
+		{ label: "PNEPCB", value: "6637", trid: "PNEB.KL" },
+		{ label: "POHKONG", value: "5080", trid: "POHK.KL" },
+		{ label: "POHUAT", value: "7088", trid: "PHUA.KL" },
+		{ label: "POHUATWB", value: "7088WB", trid: "" },
+		{ label: "POLY", value: "8117", trid: "PGFM.KL" },
+		{ label: "POS", value: "4634", trid: "PSHL.KL" },
+		{ label: "PPB", value: "4065", trid: "PEPT.KL" },
+		{ label: "PPG", value: "7190", trid: "PPGB.KL" },
+		{ label: "PPHB", value: "8273", trid: "PPHB.KL" },
+		{ label: "PRESBHD", value: "5204", trid: "PSTG.KL" },
+		{ label: "PRESTAR", value: "9873", trid: "PTAR.KL" },
+		{ label: "PRG", value: "7168", trid: "PRGH.KL" },
+		{ label: "PRGWA", value: "7168WA", trid: "" },
+		{ label: "PRIVA", value: "0123", trid: "PRTB.KL" },
+		{ label: "PRKCORP", value: "8346", trid: "PERA.KL" },
+		{ label: "PRLEXUS", value: "8966", trid: "PXUS.KL" },
+		{ label: "PRLEXUSWA", value: "8966WA", trid: "" },
+		{ label: "PRTASCO", value: "5070", trid: "PRTO.KL" },
+		{ label: "PSIPTEK", value: "7145", trid: "PSIP.KL" },
+		{ label: "PSIPTEKWA", value: "7145WA", trid: "" },
+		{ label: "PTARAS", value: "9598", trid: "PINT.KL" },
+		{ label: "PTB", value: "0038", trid: "PLTD.KL" },
+		{ label: "PTGTIN", value: "2208", trid: "PTTS.KL" },
+		{ label: "PTRANS", value: "0186", trid: "PERT.KL" },
+		{ label: "PTRANSWA", value: "0186WA", trid: "" },
+		{ label: "PUC", value: "0007", trid: "PUCF.KL" },
+		{ label: "PUCWA", value: "0007WA", trid: "" },
+		{ label: "PUCWB", value: "0007WB", trid: "" },
+		{ label: "PUNCAK", value: "6807", trid: "PNHB.KL" },
+		{ label: "PUNCAKWB", value: "6807WB", trid: "" },
+		{ label: "PWF", value: "7134", trid: "PWFC.KL" },
+		{ label: "PWFWA", value: "7134WA", trid: "" },
+		{ label: "PWORTH", value: "7123", trid: "PWPB.KL" },
+		{ label: "PWROOT", value: "7237", trid: "POWE.KL" },
+		{ label: "QES", value: "0196", trid: "" },
+		{ label: "QL", value: "7084", trid: "QRES.KL" },
+		{ label: "QUALITY", value: "7544", trid: "QCHB.KL" },
+		{ label: "RALCO", value: "7498", trid: "RALC.KL" },
+		{ label: "RALCOWB", value: "7498WB", trid: "" },
+		{ label: "RANHILL", value: "5272", trid: "RANH.KL" },
+		{ label: "RAPID", value: "7765", trid: "RAPD.KL" },
+		{ label: "RCECAP", value: "9296", trid: "REDI.KL" },
+		{ label: "REACH", value: "5256", trid: "RESE.KL" },
+		{ label: "REACHWA", value: "5256WA", trid: "" },
+		{ label: "REDTONE", value: "0032", trid: "RTON.KL" },
+		{ label: "RESINTC", value: "7232", trid: "RESN.KL" },
+		{ label: "REV", value: "0173", trid: "REVA.KL" },
+		{ label: "REX", value: "9946", trid: "REXI.KL" },
+		{ label: "REXIT", value: "0106", trid: "REXT.KL" },
+		{ label: "RGB", value: "0037", trid: "RGBI.KL" },
+		{ label: "RHBBANK", value: "1066", trid: "RHBC.KL" },
+		{ label: "RHONEMA", value: "5278", trid: "RHON.KL" },
+		{ label: "ROHAS", value: "9741", trid: "TECN.KL" },
+		{ label: "RSAWIT", value: "5113", trid: "RIMB.KL" },
+		{ label: "RSENA", value: "5270", trid: "RED.KL" },
+		{ label: "RSENAWA", value: "5270WA", trid: "" },
+		{ label: "RUBEREX", value: "7803", trid: "RUMM.KL" },
+		{ label: "RVIEW", value: "2542", trid: "RVWL.KL" },
+		{ label: "SAB", value: "5134", trid: "SOUS.KL" },
+		{ label: "SALCON", value: "8567", trid: "SLCN.KL" },
+		{ label: "SALUTE", value: "0183", trid: "SALU.KL" },
+		{ label: "SAM", value: "9822", trid: "SAEG.KL" },
+		{ label: "SAMCHEM", value: "5147", trid: "SAHB.KL" },
+		{ label: "SANBUMI", value: "9113", trid: "SANH.KL" },
+		{ label: "SANICHI", value: "0133", trid: "SAIH.KL" },
+		{ label: "SANICHIWC", value: "0133WC", trid: "" },
+		{ label: "SANICHIWD", value: "0133WD", trid: "" },
+		{ label: "SAPIND", value: "7811", trid: "SAPU.KL" },
+		{ label: "SAPNRG", value: "5218", trid: "SKPE.KL" },
+		{ label: "SAPRES", value: "4596", trid: "SRCS.KL" },
+		{ label: "SASBADI", value: "5252", trid: "SAHO.KL" },
+		{ label: "SAUDEE", value: "5157", trid: "SAUD.KL" },
+		{ label: "SAUDEEWA", value: "5157WA", trid: "" },
+		{ label: "SBAGAN", value: "2569", trid: "SBRK.KL" },
+		{ label: "SBCCORP", value: "5207", trid: "SIAH.KL" },
+		{ label: "SCABLE", value: "5170", trid: "SACB.KL" },
+		{ label: "SCBUILD", value: "0109", trid: "SCST.KL" },
+		{ label: "SCBUILDWB", value: "0109WB", trid: "" },
+		{ label: "SCC", value: "0158", trid: "SCCH.KL" },
+		{ label: "SCGM", value: "7247", trid: "SCGB.KL" },
+		{ label: "SCGMWA", value: "7247WA", trid: "" },
+		{ label: "SCH", value: "0161", trid: "SCHG.KL" },
+		{ label: "SCHWA", value: "0161WA", trid: "" },
+		{ label: "SCIB", value: "9237", trid: "SCIB.KL" },
+		{ label: "SCICOM", value: "0099", trid: "SCCM.KL" },
+		{ label: "SCIENTX", value: "4731", trid: "STIK.KL" },
+		{ label: "SCNWOLF", value: "7239", trid: "SCWF.KL" },
+		{ label: "SCOMI", value: "7158", trid: "SCOI.KL" },
+		{ label: "SCOMIES", value: "7045", trid: "SCES.KL" },
+		{ label: "SCOMIWB", value: "7158WB", trid: "" },
+		{ label: "SCOMNET", value: "0001", trid: "SCTH.KL" },
+		{ label: "SCOPE", value: "0028", trid: "SCPE.KL" },
+		{ label: "SCOPEWA", value: "0028WA", trid: "" },
+		{ label: "SDRED", value: "2224", trid: "SDGS.KL" },
+		{ label: "SEACERA", value: "7073", trid: "SCER.KL" },
+		{ label: "SEACERAWB", value: "7073WB", trid: "" },
+		{ label: "SEACERAWC", value: "7073WC", trid: "" },
+		{ label: "SEAL", value: "4286", trid: "SEAL.KL" },
+		{ label: "SEALINK", value: "5145", trid: "SLKI.KL" },
+		{ label: "SEB", value: "5163", trid: "SERE.KL" },
+		{ label: "SEDANIA", value: "0178", trid: "SEDA.KL" },
+		{ label: "SEEHUP", value: "7053", trid: "SCHB.KL" },
+		{ label: "SEG", value: "9792", trid: "SEDU.KL" },
+		{ label: "SEM", value: "5250", trid: "SEVE.KL" },
+		{ label: "SENDAI", value: "5205", trid: "ESCB.KL" },
+		{ label: "SERBADK", value: "5279", trid: "" },
+		{ label: "SERNKOU", value: "7180", trid: "SKOU.KL" },
+		{ label: "SERNKOUWA", value: "7180WA", trid: "" },
+		{ label: "SERSOL", value: "0055", trid: "SSOL.KL" },
+		{ label: "SERSOLWA", value: "0055WA", trid: "" },
+		{ label: "SGB", value: "7165", trid: "SPRI.KL" },
+		{ label: "SGBWA", value: "7165WA", trid: "" },
+		{ label: "SHANG", value: "5517", trid: "SHGM.KL" },
+		{ label: "SHCHAN", value: "4316", trid: "SHCS.KL" },
+		{ label: "SHH", value: "7412", trid: "SHHR.KL" },
+		{ label: "SHL", value: "6017", trid: "SHLC.KL" },
+		{ label: "SIGGAS", value: "5181", trid: "SIGS.KL" },
+		{ label: "SIGN", value: "7246", trid: "SGNA.KL" },
+		{ label: "SIGNWA", value: "7246WA", trid: "" },
+		{ label: "SIME", value: "4197", trid: "SIME.KL" },
+		{ label: "SIMEPLT", value: "5285", trid: "" },
+		{ label: "SIMEPROP", value: "5288", trid: "" },
+		{ label: "SINOTOP", value: "8532", trid: "SINH.KL" },
+		{ label: "SJC", value: "9431", trid: "SENI.KL" },
+		{ label: "SKBSHUT", value: "7115", trid: "SKBC.KL" },
+		{ label: "SKH", value: "0060", trid: "SKHC.KL" },
+		{ label: "SKPRES", value: "7155", trid: "SKPR.KL" },
+		{ label: "SLP", value: "7248", trid: "SLPB.KL" },
+		{ label: "SMCAP", value: "9776", trid: "FMBS.KL" },
+		{ label: "SMCAPWB", value: "9776WB", trid: "" },
+		{ label: "SMI", value: "4375", trid: "SMIS.KL" },
+		{ label: "SMISCOR", value: "7132", trid: "SMBH.KL" },
+		{ label: "SMRT", value: "0117", trid: "SMRS.KL" },
+		{ label: "SMTRACK", value: "0169", trid: "SMTR.KL" },
+		{ label: "SNC", value: "7943", trid: "SAND.KL" },
+		{ label: "SNTORIA", value: "5213", trid: "SNTO.KL" },
+		{ label: "SNTORIAWA", value: "5213WA", trid: "" },
+		{ label: "SNTORIAWB", value: "5213WB", trid: "" },
+		{ label: "SOLID", value: "5242", trid: "SOIL.KL" },
+		{ label: "SOLIDWA", value: "5242WA", trid: "" },
+		{ label: "SOLUTN", value: "0093", trid: "SLEG.KL" },
+		{ label: "SOLUTNWA", value: "0093WA", trid: "" },
+		{ label: "SONA", value: "5241", trid: "SONA.KL" },
+		{ label: "SOP", value: "5126", trid: "SOPS.KL" },
+		{ label: "SPB", value: "1783", trid: "SELS.KL" },
+		{ label: "SPRITZER", value: "7103", trid: "SPTZ.KL" },
+		{ label: "SPSETIA", value: "8664", trid: "SETI.KL" },
+		{ label: "SRIDGE", value: "0129", trid: "SIVR.KL" },
+		{ label: "SRIDGEWA", value: "0129WA", trid: "" },
+		{ label: "SSTEEL", value: "5665", trid: "STEE.KL" },
+		{ label: "STAR", value: "6084", trid: "STAR.KL" },
+		{ label: "STERPRO", value: "0140", trid: "STER.KL" },
+		{ label: "STERPROWA", value: "0140WA", trid: "" },
+		{ label: "STONE", value: "7143", trid: "SMAE.KL" },
+		{ label: "STONEWA", value: "7143WA", trid: "" },
+		{ label: "STRAITS", value: "0080", trid: "RAYA.KL" },
+		{ label: "STRAITSWA", value: "0080WA", trid: "" },
+		{ label: "SUBUR", value: "6904", trid: "SUBU.KL" },
+		{ label: "SUCCESS", value: "7207", trid: "SCCE.KL" },
+		{ label: "SUIWAH", value: "9865", trid: "SWAH.KL" },
+		{ label: "SUMATEC", value: "1201", trid: "SUTR.KL" },
+		{ label: "SUMATECWA", value: "1201WA", trid: "" },
+		{ label: "SUMATECWB", value: "1201WB", trid: "" },
+		{ label: "SUNCON", value: "5263", trid: "SCOG.KL" },
+		{ label: "SUNREIT", value: "5176", trid: "SUNW.KL" },
+		{ label: "SUNSURIA", value: "3743", trid: "SUNS.KL" },
+		{ label: "SUNSURIAWA", value: "3743WA", trid: "" },
+		{ label: "SUNWAY", value: "5211", trid: "SWAY.KL" },
+		{ label: "SUNWAYWB", value: "5211WB", trid: "" },
+		{ label: "SUNZEN", value: "0148", trid: "SZBB.KL" },
+		{ label: "SUNZENWA", value: "0148WA", trid: "" },
+		{ label: "SUNZENWB", value: "0148WB", trid: "" },
+		{ label: "SUPERLN", value: "7235", trid: "SPLH.KL" },
+		{ label: "SUPERMX", value: "7106", trid: "SUPM.KL" },
+		{ label: "SURIA", value: "6521", trid: "SURI.KL" },
+		{ label: "SWKPLNT", value: "5135", trid: "SPLN.KL" },
+		{ label: "SWSCAP", value: "7186", trid: "SWSB.KL" },
+		{ label: "SYCAL", value: "9717", trid: "SYCA.KL" },
+		{ label: "SYF", value: "7082", trid: "SYFR.KL" },
+		{ label: "SYFWB", value: "7082WB", trid: "" },
+		{ label: "SYMLIFE", value: "1538", trid: "SYML.KL" },
+		{ label: "SYMLIFEWB", value: "1538WB", trid: "" },
+		{ label: "SYSCORP", value: "5173", trid: "SYSC.KL" },
+		{ label: "SYSTECH", value: "0050", trid: "SYST.KL" },
+		{ label: "T7GLOBAL", value: "7228", trid: "TGLO.KL" },
+		{ label: "TA", value: "4898", trid: "TAES.KL" },
+		{ label: "TAANN", value: "5012", trid: "TAAN.KL" },
+		{ label: "TADMAX", value: "4022", trid: "TADM.KL" },
+		{ label: "TAFI", value: "7211", trid: "TAFI.KL" },
+		{ label: "TAGB", value: "5158", trid: "TAGL.KL" },
+		{ label: "TAKAFUL", value: "6139", trid: "TAKA.KL" },
+		{ label: "TALAMT", value: "2259", trid: "TALA.KL" },
+		{ label: "TALIWRK", value: "8524", trid: "TWRK.KL" },
+		{ label: "TALIWRKWB", value: "8524WB", trid: "" },
+		{ label: "TAMBUN", value: "5191", trid: "TAMB.KL" },
+		{ label: "TANCO", value: "2429", trid: "TANC.KL" },
+		{ label: "TAS", value: "5149", trid: "TSOF.KL" },
+		{ label: "TASCO", value: "5140", trid: "TASC.KL" },
+		{ label: "TASEK", value: "4448", trid: "TKCS.KL" },
+		{ label: "TATGIAP", value: "5178", trid: "TATG.KL" },
+		{ label: "TAWIN", value: "7097", trid: "TWHB.KL" },
+		{ label: "TCHONG", value: "4405", trid: "TNCS.KL" },
+		{ label: "TDEX", value: "0132", trid: "TOEX.KL" },
+		{ label: "TDEXWA", value: "0132WA", trid: "" },
+		{ label: "TDM", value: "2054", trid: "TDMS.KL" },
+		{ label: "TECFAST", value: "0084", trid: "TCHF.KL" },
+		{ label: "TECGUAN", value: "7439", trid: "TGPB.KL" },
+		{ label: "TEKSENG", value: "7200", trid: "TSHB.KL" },
+		{ label: "TEKSENGWA", value: "7200WA", trid: "" },
+		{ label: "TENAGA", value: "5347", trid: "TENA.KL" },
+		{ label: "TEOSENG", value: "7252", trid: "TSCP.KL" },
+		{ label: "TEOSENGWA", value: "7252WA", trid: "" },
+		{ label: "TEXCHEM", value: "8702", trid: "TEXC.KL" },
+		{ label: "TEXCYCL", value: "0089", trid: "TXCY.KL" },
+		{ label: "TFP", value: "0145", trid: "TFPS.KL" },
+		{ label: "TFPWA", value: "0145WA", trid: "" },
+		{ label: "TGL", value: "9369", trid: "TGLB.KL" },
+		{ label: "TGUAN", value: "7034", trid: "TGIB.KL" },
+		{ label: "TGUANWA", value: "7034WA", trid: "" },
+		{ label: "THETA", value: "9075", trid: "THET.KL" },
+		{ label: "THHEAVY", value: "7206", trid: "THHE.KL" },
+		{ label: "THPLANT", value: "5112", trid: "THPB.KL" },
+		{ label: "THRIVEN", value: "7889", trid: "THRI.KL" },
+		{ label: "THRIVENWB", value: "7889WB", trid: "" },
+		{ label: "TIENWAH", value: "7374", trid: "TWPH.KL" },
+		{ label: "TIGER", value: "7079", trid: "TIGE.KL" },
+		{ label: "TIGERWB", value: "7079WB", trid: "" },
+		{ label: "TIGERWC", value: "7079WC", trid: "" },
+		{ label: "TIMECOM", value: "5031", trid: "TCOM.KL" },
+		{ label: "TIMWELL", value: "7854", trid: "TWEL.KL" },
+		{ label: "TITIJYA", value: "5239", trid: "TITI.KL" },
+		{ label: "TM", value: "4863", trid: "TLMM.KL" },
+		{ label: "TMCLIFE", value: "0101", trid: "TMCN.KL" },
+		{ label: "TMCLIFEWB", value: "0101WB", trid: "" },
+		{ label: "TNLOGIS", value: "8397", trid: "TNTT.KL" },
+		{ label: "TNLOGISWC", value: "8397WC", trid: "" },
+		{ label: "TOCEAN", value: "7218", trid: "TOCE.KL" },
+		{ label: "TOMEI", value: "7230", trid: "TMEI.KL" },
+		{ label: "TOMYPAK", value: "7285", trid: "TOMY.KL" },
+		{ label: "TOMYPAKWA", value: "7285WA", trid: "" },
+		{ label: "TONGHER", value: "5010", trid: "THRB.KL" },
+		{ label: "TOPGLOV", value: "7113", trid: "TPGC.KL" },
+		{ label: "TOYOINK", value: "7173", trid: "TOYG.KL" },
+		{ label: "TOYOINKWA", value: "7173WA", trid: "" },
+		{ label: "TPC", value: "7176", trid: "TPCP.KL" },
+		{ label: "TPCWA", value: "7176WA", trid: "" },
+		{ label: "TRC", value: "5054", trid: "TRCG.KL" },
+		{ label: "TRIPLC", value: "5622", trid: "TPLC.KL" },
+		{ label: "TRIVE", value: "0118", trid: "TRIV.KL" },
+		{ label: "TRIVEWB", value: "0118WB", trid: "" },
+		{ label: "TROP", value: "5401", trid: "TROP.KL" },
+		{ label: "TROPWA", value: "5401WA", trid: "" },
+		{ label: "TSH", value: "9059", trid: "TSHR.KL" },
+		{ label: "TSRCAP", value: "5042", trid: "TSRP.KL" },
+		{ label: "TSRCAPWB", value: "5042WB", trid: "" },
+		{ label: "TUNEPRO", value: "5230", trid: "TUNE.KL" },
+		{ label: "TURBO", value: "5167", trid: "TURB.KL" },
+		{ label: "TURIYA", value: "4359", trid: "TURY.KL" },
+		{ label: "TWRREIT", value: "5111", trid: "TWRE.KL" },
+		{ label: "UCHITEC", value: "7100", trid: "UCHI.KL" },
+		{ label: "UCREST", value: "0005", trid: "PLTE.KL" },
+		{ label: "UEMS", value: "5148", trid: "UMSB.KL" },
+		{ label: "ULICORP", value: "7133", trid: "UULI.KL" },
+		{ label: "UMCCA", value: "2593", trid: "UMRS.KL" },
+		{ label: "UMS", value: "7137", trid: "UMSH.KL" },
+		{ label: "UMSNGB", value: "7227", trid: "UMSN.KL" },
+		{ label: "UMW", value: "4588", trid: "UMWS.KL" },
+		{ label: "UMWOG", value: "5243", trid: "UMOG.KL" },
+		{ label: "UMWOGWA", value: "5243WA", trid: "" },
+		{ label: "UNIMECH", value: "7091", trid: "UMEC.KL" },
+		{ label: "UNIMECHWA", value: "7091WA", trid: "" },
+		{ label: "UNISEM", value: "5005", trid: "UNSM.KL" },
+		{ label: "UOADEV", value: "5200", trid: "UOAD.KL" },
+		{ label: "UOAREIT", value: "5110", trid: "UOAR.KL" },
+		{ label: "UPA", value: "7757", trid: "UPAB.KL" },
+		{ label: "UTDPLT", value: "2089", trid: "UTPS.KL" },
+		{ label: "UTUSAN", value: "5754", trid: "UTUS.KL" },
+		{ label: "UZMA", value: "7250", trid: "UZMA.KL" },
+		{ label: "VERSATL", value: "4995", trid: "VSTL.KL" },
+		{ label: "VERTICE", value: "7240", trid: "VOIR.KL" },
+		{ label: "VERTICEWA", value: "7240WA", trid: "" },
+		{ label: "VIS", value: "0120", trid: "VSDY.KL" },
+		{ label: "VISWB", value: "0120WB", trid: "" },
+		{ label: "VITROX", value: "0097", trid: "VTRX.KL" },
+		{ label: "VIVOCOM", value: "0069", trid: "VIVO.KL" },
+		{ label: "VIVOCOMWB", value: "0069WB", trid: "" },
+		{ label: "VIVOCOMWC", value: "0069WC", trid: "" },
+		{ label: "VIVOCOMWD", value: "0069WD", trid: "" },
+		{ label: "VIZIONE", value: "7070", trid: "VIZI.KL" },
+		{ label: "VIZIONEWB", value: "7070WB", trid: "" },
+		{ label: "VIZIONEWC", value: "7070WC", trid: "" },
+		{ label: "VS", value: "6963", trid: "VSID.KL" },
+		{ label: "VSOLAR", value: "0066", trid: "VSOL.KL" },
+		{ label: "VSWA", value: "6963WA", trid: "" },
+		{ label: "WANGZNG", value: "7203", trid: "WGZH.KL" },
+		{ label: "WARISAN", value: "5016", trid: "WATC.KL" },
+		{ label: "WASEONG", value: "5142", trid: "WAHE.KL" },
+		{ label: "WATTA", value: "7226", trid: "WATA.KL" },
+		{ label: "WCEHB", value: "3565", trid: "WCEH.KL" },
+		{ label: "WCT", value: "9679", trid: "WCTE.KL" },
+		{ label: "WCTWE", value: "9679WE", trid: "" },
+		{ label: "WEGMANS", value: "0197", trid: "" },
+		{ label: "WEIDA", value: "7111", trid: "WEID.KL" },
+		{ label: "WELLCAL", value: "7231", trid: "WCAL.KL" },
+		{ label: "WIDETEC", value: "7692", trid: "WIDE.KL" },
+		{ label: "WILLOW", value: "0008", trid: "WLOW.KL" },
+		{ label: "WINTONI", value: "0141", trid: "WINT.KL" },
+		{ label: "WINTONIWA", value: "0141WA", trid: "" },
+		{ label: "WMG", value: "6378", trid: "TEKA.KL" },
+		{ label: "WONG", value: "7050", trid: "WENG.KL" },
+		{ label: "WOODLAN", value: "7025", trid: "WLAN.KL" },
+		{ label: "WPRTS", value: "5246", trid: "WPHB.KL" },
+		{ label: "WTHORSE", value: "5009", trid: "WHSE.KL" },
+		{ label: "WTK", value: "4243", trid: "WTKH.KL" },
+		{ label: "WZSATU", value: "7245", trid: "WZRB.KL" },
+		{ label: "WZSATUWA", value: "7245WA", trid: "" },
+		{ label: "XDL", value: "5156", trid: "XIDE.KL" },
+		{ label: "XDLWC", value: "5156WC", trid: "" },
+		{ label: "XIANLNG", value: "7121", trid: "XIAN.KL" },
+		{ label: "XINGHE", value: "0095", trid: "XINH.KL" },
+		{ label: "XINGHEWA", value: "0095WA", trid: "" },
+		{ label: "XINHWA", value: "5267", trid: "XINW.KL" },
+		{ label: "XINQUAN", value: "5155", trid: "XING.KL" },
+		{ label: "XINQUANWA", value: "5155WA", trid: "" },
+		{ label: "XINQUANWB", value: "5155WB", trid: "" },
+		{ label: "XOX", value: "0165", trid: "XOXB.KL" },
+		{ label: "XOXWA", value: "0165WA", trid: "" },
+		{ label: "Y&G", value: "7003", trid: "YGCB.KL" },
+		{ label: "Y&GWA", value: "7003WA", trid: "" },
+		{ label: "YEELEE", value: "5584", trid: "YLEE.KL" },
+		{ label: "YFG", value: "7122", trid: "YFGB.KL" },
+		{ label: "YGL", value: "0086", trid: "YGLC.KL" },
+		{ label: "YILAI", value: "5048", trid: "YLAI.KL" },
+		{ label: "YINSON", value: "7293", trid: "YINS.KL" },
+		{ label: "YKGI", value: "7020", trid: "YKGI.KL" },
+		{ label: "YKGIWB", value: "7020WB", trid: "" },
+		{ label: "YLI", value: "7014", trid: "YLIH.KL" },
+		{ label: "YNHPROP", value: "3158", trid: "YNHB.KL" },
+		{ label: "YOCB", value: "5159", trid: "YGON.KL" },
+		{ label: "YONGTAI", value: "7066", trid: "YONG.KL" },
+		{ label: "YONGTAIWA", value: "7066WA", trid: "" },
+		{ label: "YSPSAH", value: "7178", trid: "YSPS.KL" },
+		{ label: "YTL", value: "4677", trid: "YTLS.KL" },
+		{ label: "YTLLAND", value: "2577", trid: "YTLL.KL" },
+		{ label: "YTLPOWR", value: "6742", trid: "YTLP.KL" },
+		{ label: "YTLPOWRWB", value: "6742WB", trid: "" },
+		{ label: "YTLREIT", value: "5109", trid: "YTLR.KL" },
+		{ label: "ZECON", value: "7028", trid: "ZCON.KL" },
+		{ label: "ZELAN", value: "2283", trid: "ZLAN.KL" },
+		{ label: "ZELANWA", value: "2283WA", trid: "" },
+		{ label: "ZHULIAN", value: "5131", trid: "ZHCO.KL" },
+    ];
+	
+	$('#txtStockCode').autocomplete({
+	    source: stockList,
+	    select: function(event, ui) {
+	        event.preventDefault();
+	        //$('#txtStockCode').val(ui.item.label);
+	        $('#txtStockCode').val(ui.item.value);
+	        stockCode = ui.item.value;
+	        stockSymbol = ui.item.label;
+	        stockTRID = ui.item.trid;
+	    }
+	})
+});
+</script>
+</html>
